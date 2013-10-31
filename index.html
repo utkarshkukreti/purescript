@@ -215,7 +215,7 @@ bool = 1 &gt; 2 || true
 
 <p>PureScript arrays correspond to Javascript arrays at runtime, but all elements must have the same type.</p>
 
-<p>Array literals look like Javascript array literals: `[1, 2, 3]</p>
+<p>Array literals look like Javascript array literals: <code>[1, 2, 3]</code></p>
 
 <p>Array elements can be read using array index notation <code>arr[0]</code></p>
 
@@ -386,9 +386,9 @@ baz(x)
 <p>That is, while the example above is valid, the following does not compile:</p>
 
 <pre><code>incr = \n -&gt; do
+      n = n + 1 
+      return n
 </code></pre>
-
-<p>    n = n + 1          return n</p>
 
 <p>The variable <code>n</code> is not mutable, and so the assignment in the first line of the <code>do</code> block is not allowed.</p>
 
