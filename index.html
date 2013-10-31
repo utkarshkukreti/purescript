@@ -386,9 +386,9 @@ baz(x)
 <p>That is, while the example above is valid, the following does not compile:</p>
 
 <pre><code>incr = \n -&gt; do
-      n = n + 1 
-      return n
 </code></pre>
+
+<p>    n = n + 1          return n</p>
 
 <p>The variable <code>n</code> is not mutable, and so the assignment in the first line of the <code>do</code> block is not allowed.</p>
 
@@ -616,7 +616,7 @@ addFoo = \o -&gt; o.foo + o.bar
 
 <p>The generated Javascript assumes the existence of a method called <code>Object.extend</code> such that <code>Object.extend(o, p)</code> takes an object <code>o</code> and generates a shallow copy of <code>o</code> including the properties of <code>p</code>. A simple JQuery implementation of this specification is</p>
 
-<pre><code>Object.prootype.extend = function(o, p) {
+<pre><code>Object.prototype.extend = function(o, p) {
   return $.extend({}, o, p);
 };
 </code></pre>
