@@ -337,7 +337,7 @@ identity = \x -&gt; x
 <h2>
 <a name="kind-system" class="anchor" href="#kind-system"><span class="octicon octicon-link"></span></a>Kind System</h2>
 
-<p>There are two primitive kinds, the kind of types and the kind of rows. Higher kinded types are also supported. That is, a type variable can refer to not only a type or a row, but a type constructor, or row constructor etc.</p>
+<p>There are two primitive kinds, the kind <code>*</code> of types and the kind <code>#</code> of rows. Higher kinded types are also supported. That is, a type variable can refer to not only a type or a row, but a type constructor, or row constructor etc.</p>
 
 <h2>
 <a name="whitespace" class="anchor" href="#whitespace"><span class="octicon octicon-link"></span></a>Whitespace</h2>
@@ -400,16 +400,6 @@ baz(x)
   return m
 </code></pre>
 
-<p>Object properties and array elements can also be mutated inside a block. For example:</p>
-
-<pre><code>createObject = do
-  var a = [1, 2, 3]
-  a[1] = 4
-  var o = { foo: [] }
-  o.foo = a
-  return o
-</code></pre>
-
 <h2>
 <a name="for-loops" class="anchor" href="#for-loops"><span class="octicon octicon-link"></span></a>For Loops</h2>
 
@@ -465,6 +455,16 @@ baz(x)
       m = m * 3 + 1
     count = count + 1
   return count
+</code></pre>
+
+<h2>
+<a name="if-then-else-expressions" class="anchor" href="#if-then-else-expressions"><span class="octicon octicon-link"></span></a>If-Then-Else Expressions</h2>
+
+<p>The <code>if</code>, <code>then</code> and <code>else</code> keywords can also be used to create conditional expressions. In this case, the <code>else</code> block is always required.</p>
+
+<p>For example,</p>
+
+<pre><code>conditional = if 2 &gt; 1 then "ok" else "oops"
 </code></pre>
 
 <h2>
@@ -563,9 +563,9 @@ case numericValue of
 <p>For example:</p>
 
 <pre><code>f = \o -&gt; case o of
-  { arr = [] } -&gt; 0
-  { arr = [x:_], take = "head" } -&gt; x
-  { arr = [_:xs], take = "tail" } -&gt; sum xs
+  { arr = [x:_], take = "car" } -&gt; x
+  { arr = [_,x:_], take = "cadr" } -&gt; x
+  _ -&gt; 0
 </code></pre>
 
 <h2>
@@ -589,6 +589,36 @@ case numericValue of
   [] -&gt; 0
   [x:xs] | x % 2 == 0 -&gt; 1 + evens xs
   [_:xs] -&gt; evens xs
+</code></pre>
+
+<h2>
+<a name="type-synonyms" class="anchor" href="#type-synonyms"><span class="octicon octicon-link"></span></a>Type Synonyms</h2>
+
+<p>For convenience, it is possible to declare a synonym for a type using the <code>type</code> keyword. Type synonyms can include type arguments.</p>
+
+<p>For example:</p>
+
+<pre><code>type Foo = { foo :: Number, bar Number }
+
+addFoo :: Foo -&gt; Number
+addFoo = \o -&gt; o.foo + o.bar
+</code></pre>
+
+<h2>
+<a name="record-updates" class="anchor" href="#record-updates"><span class="octicon octicon-link"></span></a>Record Updates</h2>
+
+<p>Properties on records can be updated using the following syntax: <code>o { key = value, ..., key = value }</code></p>
+
+<p>For example, the following function increments the <code>foo</code> property on its argument:</p>
+
+<pre><code>incr = \o -&gt; o { foo = o.foo + 1 }
+</code></pre>
+
+<p>The generated Javascript assumes the existence of a method called <code>Object.extend</code> such that <code>Object.extend(o, p)</code> takes an object <code>o</code> and generates a shallow copy of <code>o</code> including the properties of <code>p</code>. A simple JQuery implementation of this specification is</p>
+
+<pre><code>Object.prootype.extend = function(o, p) {
+  return $.extend({}, o, p);
+};
 </code></pre>
 
 <h2>
