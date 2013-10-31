@@ -656,7 +656,7 @@ infixr 7 %%
 
 <p>To declare a new type with no constructors, use <code>extern data</code> and provide the kind:</p>
 
-<pre><code>extern IO :: * -&gt; *
+<pre><code>extern data IO :: * -&gt; *
 
 extern console :: { 
   log :: String -&gt; IO {} 
