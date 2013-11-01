@@ -98,11 +98,11 @@
   <span class="p">;</span> <span class="n">age</span> <span class="ow">::</span> <span class="kt">Number</span>   
   <span class="p">}</span>
 
-<span class="nf">extern</span> <span class="n">itoa</span> <span class="ow">::</span> <span class="kt">Number</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
+<span class="nf">extern</span> <span class="n">numberToString</span> <span class="ow">::</span> <span class="kt">Number</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
 
 <span class="nf">showPerson</span> <span class="ow">::</span> <span class="kt">Person</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
 <span class="nf">showPerson</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">p</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">p</span> <span class="kr">of</span>
-  <span class="kt">Person</span> <span class="n">o</span> <span class="ow">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="n">name</span> <span class="o">++</span> <span class="s">", aged "</span> <span class="o">++</span> <span class="n">itoa</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+  <span class="kt">Person</span> <span class="n">o</span> <span class="ow">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="n">name</span> <span class="o">++</span> <span class="s">", aged "</span> <span class="o">++</span> <span class="n">numberToString</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
 </pre></div>
 
 <p>Line by line, this reads as follows:</p>
@@ -116,8 +116,7 @@
 </li>
 </ul>
 </li>
-<li>The <code>itoa</code> function is written in Javascript, and takes a <code>Number</code> and returns a <code>String</code>
-</li>
+<li>The <code>numberToString</code> function is written in Javascript, and converts a <code>Number</code> to its <code>String</code> representation</li>
 <li>The <code>showPerson</code> function takes a <code>Person</code> and returns a <code>String</code>
 </li>
 <li>
@@ -128,12 +127,12 @@
   <span class="k">return</span> <span class="p">{</span> <span class="nx">ctor</span><span class="o">:</span> <span class="s1">'Person'</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">value</span> <span class="p">};</span> 
 <span class="p">};</span>
 
-<span class="kd">var</span> <span class="nx">showPerson</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span> 
+<span class="kd">function</span> <span class="nx">showPerson</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span> 
   <span class="k">return</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">_0</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">_0</span><span class="p">.</span><span class="nx">ctor</span> <span class="o">===</span> <span class="s2">"Person"</span><span class="p">)</span> <span class="p">{</span> 
       <span class="kd">var</span> <span class="nx">_1</span> <span class="o">=</span> <span class="nx">_0</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span> 
       <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="nx">_1</span><span class="p">;</span> 
-      <span class="k">return</span> <span class="nx">o</span><span class="p">.</span><span class="nx">name</span> <span class="o">++</span> <span class="s2">", aged "</span> <span class="o">++</span> <span class="nx">itoa</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">age</span><span class="p">);</span> 
+      <span class="k">return</span> <span class="nx">o</span><span class="p">.</span><span class="nx">name</span> <span class="o">++</span> <span class="s2">", aged "</span> <span class="o">++</span> <span class="nx">numberToString</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">age</span><span class="p">);</span> 
     <span class="p">}</span>
     <span class="k">throw</span> <span class="s2">"Failed pattern match"</span><span class="p">;</span> 
   <span class="p">})(</span><span class="nx">p</span><span class="p">);</span> 
