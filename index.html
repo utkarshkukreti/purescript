@@ -94,15 +94,15 @@
 <p>The following code defines a <code>Person</code> data type and a function to generate a string representation for a <code>Person</code>:</p>
 
 <div class="highlight highlight-haskell"><pre><span class="kr">data</span> <span class="kt">Person</span> <span class="ow">=</span> <span class="kt">Person</span> 
-<span class="p">{</span> <span class="n">name</span> <span class="ow">::</span> <span class="kt">String</span>
-<span class="p">;</span> <span class="n">age</span> <span class="ow">::</span> <span class="kt">Number</span> 
-<span class="p">}</span>
+  <span class="p">{</span> <span class="n">name</span> <span class="ow">::</span> <span class="kt">String</span>
+  <span class="p">;</span> <span class="n">age</span> <span class="ow">::</span> <span class="kt">Number</span>   
+  <span class="p">}</span>
 
 <span class="nf">extern</span> <span class="n">itoa</span> <span class="ow">::</span> <span class="kt">Number</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
 
 <span class="nf">showPerson</span> <span class="ow">::</span> <span class="kt">Person</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
 <span class="nf">showPerson</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">p</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">p</span> <span class="kr">of</span>
-<span class="kt">Person</span> <span class="n">o</span> <span class="ow">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="n">name</span> <span class="o">++</span> <span class="s">", aged "</span> <span class="o">++</span> <span class="n">itoa</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+  <span class="kt">Person</span> <span class="n">o</span> <span class="ow">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="n">name</span> <span class="o">++</span> <span class="s">", aged "</span> <span class="o">++</span> <span class="n">itoa</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
 </pre></div>
 
 <p>Line by line, this reads as follows:</p>
@@ -125,18 +125,18 @@
 </ul><p>The generated Javascript looks like this:</p>
 
 <div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">Person</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span> 
-<span class="k">return</span> <span class="p">{</span> <span class="nx">ctor</span><span class="o">:</span> <span class="s1">'Person'</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">value</span> <span class="p">};</span> 
+  <span class="k">return</span> <span class="p">{</span> <span class="nx">ctor</span><span class="o">:</span> <span class="s1">'Person'</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">value</span> <span class="p">};</span> 
 <span class="p">};</span>
 
 <span class="kd">var</span> <span class="nx">showPerson</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span> 
-<span class="k">return</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">_0</span><span class="p">)</span> <span class="p">{</span>
-<span class="k">if</span> <span class="p">(</span><span class="nx">_0</span><span class="p">.</span><span class="nx">ctor</span> <span class="o">===</span> <span class="s2">"Person"</span><span class="p">)</span> <span class="p">{</span> 
-  <span class="kd">var</span> <span class="nx">_1</span> <span class="o">=</span> <span class="nx">_0</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span> 
-  <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="nx">_1</span><span class="p">;</span> 
-  <span class="k">return</span> <span class="nx">o</span><span class="p">.</span><span class="nx">name</span> <span class="o">++</span> <span class="s2">", aged "</span> <span class="o">++</span> <span class="nx">itoa</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">age</span><span class="p">);</span> 
-<span class="p">}</span>
-<span class="k">throw</span> <span class="s2">"Failed pattern match"</span><span class="p">;</span> 
-<span class="p">})(</span><span class="nx">p</span><span class="p">);</span> 
+  <span class="k">return</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">_0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">_0</span><span class="p">.</span><span class="nx">ctor</span> <span class="o">===</span> <span class="s2">"Person"</span><span class="p">)</span> <span class="p">{</span> 
+      <span class="kd">var</span> <span class="nx">_1</span> <span class="o">=</span> <span class="nx">_0</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span> 
+      <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="nx">_1</span><span class="p">;</span> 
+      <span class="k">return</span> <span class="nx">o</span><span class="p">.</span><span class="nx">name</span> <span class="o">++</span> <span class="s2">", aged "</span> <span class="o">++</span> <span class="nx">itoa</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">age</span><span class="p">);</span> 
+    <span class="p">}</span>
+    <span class="k">throw</span> <span class="s2">"Failed pattern match"</span><span class="p">;</span> 
+  <span class="p">})(</span><span class="nx">p</span><span class="p">);</span> 
 <span class="p">};</span>
 </pre></div>
 
@@ -656,13 +656,12 @@
 
 <p>To declare a new type with no constructors, use <code>extern data</code> and provide the kind:</p>
 
-<p>extern data IO :: * -&gt; *</p>
+<div class="highlight highlight-haskell"><pre><span class="nf">extern</span> <span class="kr">data</span> <span class="kt">IO</span> <span class="ow">::</span> <span class="o">*</span> <span class="ow">-&gt;</span> <span class="o">*</span>
 
-<p>extern console :: { 
-  log :: String -&gt; IO {} 
-}</p>
-
-<pre><code></code></pre>
+<span class="nf">extern</span> <span class="n">console</span> <span class="ow">::</span> <span class="p">{</span> 
+  <span class="n">log</span> <span class="ow">::</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="p">{}</span> 
+<span class="p">}</span>
+</pre></div>
         </section>
 
         <aside id="sidebar">
