@@ -93,17 +93,17 @@
 
 <p>The following code defines a <code>Person</code> data type and a function to generate a string representation for a <code>Person</code>:</p>
 
-<pre><code>data Person = Person 
-  { name :: String
-  ; age :: Number 
-  }
+<div class="highlight highlight-haskell"><pre><span class="kr">data</span> <span class="kt">Person</span> <span class="ow">=</span> <span class="kt">Person</span> 
+<span class="p">{</span> <span class="n">name</span> <span class="ow">::</span> <span class="kt">String</span>
+<span class="p">;</span> <span class="n">age</span> <span class="ow">::</span> <span class="kt">Number</span> 
+<span class="p">}</span>
 
-extern itoa :: Number -&gt; String
+<span class="nf">extern</span> <span class="n">itoa</span> <span class="ow">::</span> <span class="kt">Number</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
 
-showPerson :: Person -&gt; String
-showPerson = \p -&gt; case p of
-  Person o -&gt; o.name ++ ", aged " ++ itoa(o.age)
-</code></pre>
+<span class="nf">showPerson</span> <span class="ow">::</span> <span class="kt">Person</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
+<span class="nf">showPerson</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">p</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">p</span> <span class="kr">of</span>
+<span class="kt">Person</span> <span class="n">o</span> <span class="ow">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="n">name</span> <span class="o">++</span> <span class="s">", aged "</span> <span class="o">++</span> <span class="n">itoa</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+</pre></div>
 
 <p>Line by line, this reads as follows:</p>
 
@@ -124,21 +124,21 @@ showPerson = \p -&gt; case p of
 <code>showPerson</code> works by case analysis on its argument <code>p</code>, first matching the constructor <code>Person</code> and then using string concatenation and object accessors to return its result.</li>
 </ul><p>The generated Javascript looks like this:</p>
 
-<pre><code>var Person = function (value) { 
-  return { ctor: 'Person', value: value }; 
-};
+<div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">Person</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span> 
+<span class="k">return</span> <span class="p">{</span> <span class="nx">ctor</span><span class="o">:</span> <span class="s1">'Person'</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">value</span> <span class="p">};</span> 
+<span class="p">};</span>
 
-var showPerson = function (p) { 
-  return (function (_0) {
-    if (_0.ctor === "Person") { 
-      var _1 = _0.value; 
-      var o = _1; 
-      return o.name ++ ", aged " ++ itoa(o.age); 
-    }
-    throw "Failed pattern match"; 
-  })(p); 
-};
-</code></pre>
+<span class="kd">var</span> <span class="nx">showPerson</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span> 
+<span class="k">return</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">_0</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">_0</span><span class="p">.</span><span class="nx">ctor</span> <span class="o">===</span> <span class="s2">"Person"</span><span class="p">)</span> <span class="p">{</span> 
+  <span class="kd">var</span> <span class="nx">_1</span> <span class="o">=</span> <span class="nx">_0</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span> 
+  <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="nx">_1</span><span class="p">;</span> 
+  <span class="k">return</span> <span class="nx">o</span><span class="p">.</span><span class="nx">name</span> <span class="o">++</span> <span class="s2">", aged "</span> <span class="o">++</span> <span class="nx">itoa</span><span class="p">(</span><span class="nx">o</span><span class="p">.</span><span class="nx">age</span><span class="p">);</span> 
+<span class="p">}</span>
+<span class="k">throw</span> <span class="s2">"Failed pattern match"</span><span class="p">;</span> 
+<span class="p">})(</span><span class="nx">p</span><span class="p">);</span> 
+<span class="p">};</span>
+</pre></div>
 
 <h2>
 <a name="type-system" class="anchor" href="#type-system"><span class="octicon octicon-link"></span></a>Type System</h2>
@@ -205,10 +205,10 @@ var showPerson = function (p) {
 </li>
 </ul><p>Examples:</p>
 
-<pre><code>num = 1 + 2 * 3
-str = "Hello, " ++ "World!"
-bool = 1 &gt; 2 || true
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">num</span> <span class="ow">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">3</span>
+<span class="nf">str</span> <span class="ow">=</span> <span class="s">"Hello, "</span> <span class="o">++</span> <span class="s">"World!"</span>
+<span class="nf">bool</span> <span class="ow">=</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">||</span> <span class="n">true</span>
+</pre></div>
 
 <h2>
 <a name="arrays" class="anchor" href="#arrays"><span class="octicon octicon-link"></span></a>Arrays</h2>
@@ -237,14 +237,14 @@ bool = 1 &gt; 2 || true
 
 <p>For example:</p>
 
-<pre><code>data Foo a = Foo | Bar String
+<div class="highlight highlight-haskell"><pre><span class="kr">data</span> <span class="kt">Foo</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Foo</span> <span class="o">|</span> <span class="kt">Bar</span> <span class="kt">String</span>
 
-runFoo = \foo -&gt; case foo of
-  Foo -&gt; "It's a Foo"
-  Bar s -&gt; "It's a Bar. The string is " ++ s
+<span class="nf">runFoo</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">foo</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">foo</span> <span class="kr">of</span>
+<span class="kt">Foo</span> <span class="ow">-&gt;</span> <span class="s">"It's a Foo"</span>
+<span class="kt">Bar</span> <span class="n">s</span> <span class="ow">-&gt;</span> <span class="s">"It's a Bar. The string is "</span> <span class="o">++</span> <span class="n">s</span>
 
-runFoo Foo ++ runFoo (Bar "Test")
-</code></pre>
+<span class="nf">runFoo</span> <span class="kt">Foo</span> <span class="o">++</span> <span class="n">runFoo</span> <span class="p">(</span><span class="kt">Bar</span> <span class="s">"Test"</span><span class="p">)</span>
+</pre></div>
 
 <p>In the example, Foo is a tagged union type which has two constructors. It's first constructor <code>Foo</code> takes no argument, and it's second <code>Bar</code> takes one, which must be a String.</p>
 
@@ -253,42 +253,42 @@ runFoo Foo ++ runFoo (Bar "Test")
 <h2>
 <a name="functions" class="anchor" href="#functions"><span class="octicon octicon-link"></span></a>Functions</h2>
 
-<p>Functions in TypeScript can have zero or more arguments in general, just like in Javascript.</p>
+<p>Functions in PureScript can have zero or more arguments in general, just like in Javascript.</p>
 
 <p>Functions are introduced by using a backslash followed by a comma separated list of argument names:</p>
 
-<pre><code>test1 = \a, b, c -&gt; a + b + c
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">test1</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span>
+</pre></div>
 
 <p>which would correspond to the Javascript <code>function test1(a, b, c) { return a + b + c; }</code></p>
 
 <p>A function taking no arguments would look like this:</p>
 
-<pre><code>test2 = \ -&gt; 100
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">test2</span> <span class="ow">=</span> <span class="nf">\</span> <span class="ow">-&gt;</span> <span class="mi">100</span>
+</pre></div>
 
 <p>which would correspond to the Javascript <code>function test2() { return 100; }</code></p>
 
 <p>Functions are applied by providing their arguments inside parentheses:</p>
 
-<pre><code>test1(1, 2, 3)
-test2()
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">test1</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="nf">test2</span><span class="nb">()</span>
+</pre></div>
 
 <p>A special case is made in the case of functions with one argument. These functions can be applied without parentheses, and function application associates to the left:</p>
 
-<pre><code>-- has type Number -&gt; Number -&gt; Number -&gt; Number
-addThree = \a -&gt; \b -&gt; \c -&gt; a + b + c
+<div class="highlight highlight-haskell"><pre><span class="c1">-- has type Number -&gt; Number -&gt; Number -&gt; Number</span>
+<span class="nf">addThree</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="nf">\</span><span class="n">b</span> <span class="ow">-&gt;</span> <span class="nf">\</span><span class="n">c</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span>
 
--- has type Number -&gt; Number -&gt; Number
-addThree 1 
+<span class="c1">-- has type Number -&gt; Number -&gt; Number</span>
+<span class="nf">addThree</span> <span class="mi">1</span> 
 
--- has type Number -&gt; Number
-addThree 1 2 
+<span class="c1">-- has type Number -&gt; Number</span>
+<span class="nf">addThree</span> <span class="mi">1</span> <span class="mi">2</span> 
 
--- has type Number
-addThree 1 2 3 
-</code></pre>
+<span class="c1">-- has type Number</span>
+<span class="nf">addThree</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> 
+</pre></div>
 
 <h2>
 <a name="polymorphic-types" class="anchor" href="#polymorphic-types"><span class="octicon octicon-link"></span></a>Polymorphic Types</h2>
@@ -297,33 +297,33 @@ addThree 1 2 3
 
 <p>Here is an example:</p>
 
-<pre><code>identity = \x -&gt; x
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">identity</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+</pre></div>
 
 <p><code>identity</code> is inferred to have (polymorphic) type <code>forall t0. t0 -&gt; t0</code>. This means that for any type <code>t0</code>, <code>identity</code> can be given a value of type <code>t0</code> and will give back a value of the same type.</p>
 
 <p>A type annotation can also be provided:</p>
 
-<pre><code>identity :: forall a. a -&gt; a
-identity = \x -&gt; x
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">identity</span> <span class="ow">::</span> <span class="n">forall</span> <span class="n">a</span><span class="o">.</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+<span class="nf">identity</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+</pre></div>
 
 <p>Functions may also be polymorphic in row types or type variables with other kinds (see "Kind System"):</p>
 
-<pre><code>addProps = \o -&gt; o.foo + o.bar
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">addProps</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">o</span> <span class="ow">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="n">foo</span> <span class="o">+</span> <span class="n">o</span><span class="o">.</span><span class="n">bar</span>
+</pre></div>
 
 <p>Here, <code>addProps</code> is inferred to have type <code>forall r. { foo :: Number; bar :: Number | r } -&gt; Number</code>. That is, it can take any type which has properties <code>Foo</code> and <code>Bar</code>, and <em>any other record properties</em>.</p>
 
 <p>So, the following compiles:</p>
 
-<pre><code>addProps { foo: 1, bar: 2, baz: 3 }
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">addProps</span> <span class="p">{</span> <span class="n">foo</span><span class="kt">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bar</span><span class="kt">:</span> <span class="mi">2</span><span class="p">,</span> <span class="n">baz</span><span class="kt">:</span> <span class="mi">3</span> <span class="p">}</span>
+</pre></div>
 
 <p>but the following does not:</p>
 
-<pre><code>addProps { foo: 1 }
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">addProps</span> <span class="p">{</span> <span class="n">foo</span><span class="kt">:</span> <span class="mi">1</span> <span class="p">}</span>
+</pre></div>
 
 <p>since the <code>bar</code> property is missing.</p>
 
@@ -346,15 +346,15 @@ identity = \x -&gt; x
 
 <p>That is, the following is valid:</p>
 
-<pre><code>foo = bar(x) + 
-  baz(x)
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">foo</span> <span class="ow">=</span> <span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> 
+  <span class="n">baz</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
 
 <p>But this is not:</p>
 
-<pre><code>foo = bar(x) + 
-baz(x)
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">foo</span> <span class="ow">=</span> <span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> 
+<span class="nf">baz</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
 
 <h2>
 <a name="do-notation" class="anchor" href="#do-notation"><span class="octicon octicon-link"></span></a>Do Notation</h2>
@@ -374,43 +374,43 @@ baz(x)
 <li>If-Then-Else statements</li>
 </ul><p>Here is an example of a power function defined using a block:</p>
 
-<pre><code>pow = \n, p -&gt; do
-    var m = n
-      for i &lt;- 0 until p:
-        m = m * n
-      return m
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">pow</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+    <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span>
+      <span class="n">for</span> <span class="n">i</span> <span class="ow">&lt;-</span> <span class="mi">0</span> <span class="n">until</span> <span class="n">p</span><span class="kt">:</span>
+        <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">n</span>
+      <span class="n">return</span> <span class="n">m</span>
+</pre></div>
 
 <p>Blocks enable local mutation of their variables, but mutation is not allowed in general. The type system prevents mutable variables from escaping their scope.</p>
 
 <p>That is, while the example above is valid, the following does not compile:</p>
 
-<pre><code>incr = \n -&gt; do
-      n = n + 1 
-      return n
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">incr</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+  <span class="n">n</span> <span class="ow">=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span> 
+  <span class="n">return</span> <span class="n">n</span>
+</pre></div>
 
 <p>The variable <code>n</code> is not mutable, and so the assignment in the first line of the <code>do</code> block is not allowed.</p>
 
 <p>This function can be rewritten as follows:</p>
 
-<pre><code>incr = \n -&gt; do
-  var m = n
-  m = m + 1 
-  return m
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">incr</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+  <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span>
+  <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span> 
+  <span class="n">return</span> <span class="n">m</span>
+</pre></div>
 
 <h2>
 <a name="for-loops" class="anchor" href="#for-loops"><span class="octicon octicon-link"></span></a>For Loops</h2>
 
 <p>For loops look like this:</p>
 
-<pre><code>total = do
-  var n = 0
-  for i &lt;- 0 until 10:
-    n = n + i
-  return n
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">total</span> <span class="ow">=</span> <span class="kr">do</span>
+  <span class="n">var</span> <span class="n">n</span> <span class="ow">=</span> <span class="mi">0</span>
+  <span class="n">for</span> <span class="n">i</span> <span class="ow">&lt;-</span> <span class="mi">0</span> <span class="n">until</span> <span class="mi">10</span><span class="kt">:</span>
+  <span class="n">n</span> <span class="ow">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">i</span>
+  <span class="n">return</span> <span class="n">n</span>
+</pre></div>
 
 <p>The bounds <code>0</code> and <code>10</code> are inclusive and exclusive respectively.</p>
 
@@ -419,43 +419,43 @@ baz(x)
 
 <p>For each loops loop over the elements in an array using the <code>Object.forEach</code> method. A polyfill may be required for some browsers:</p>
 
-<pre><code>total = \arr -&gt; do
-  var n = 0
-  foreach i in arr:
-    n = n + i
-  return n
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">total</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+  <span class="n">var</span> <span class="n">n</span> <span class="ow">=</span> <span class="mi">0</span>
+  <span class="n">foreach</span> <span class="n">i</span> <span class="kr">in</span> <span class="n">arr</span><span class="kt">:</span>
+    <span class="n">n</span> <span class="ow">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">i</span>
+  <span class="n">return</span> <span class="n">n</span>
+</pre></div>
 
 <h2>
 <a name="while-loops" class="anchor" href="#while-loops"><span class="octicon octicon-link"></span></a>While Loops</h2>
 
 <p>The syntax of a while loop is similar to a foreach loop:</p>
 
-<pre><code>log2 = \n -&gt; do
-  var count = 0
-  var m = n
-  while m &gt; 1:
-    m = m / 2
-    count = count + 1
-  return count
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">log2</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+  <span class="n">var</span> <span class="n">count</span> <span class="ow">=</span> <span class="mi">0</span>
+  <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span>
+  <span class="n">while</span> <span class="n">m</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="kt">:</span>
+    <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">count</span> <span class="ow">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="n">return</span> <span class="n">count</span>
+</pre></div>
 
 <h2>
 <a name="if-then-else-statements" class="anchor" href="#if-then-else-statements"><span class="octicon octicon-link"></span></a>If-Then-Else Statements</h2>
 
 <p>Else branches are optional, and may contain further <code>if</code> statements, just as in Javascript:</p>
 
-<pre><code>collatz = \n -&gt; do
-  var count = 0
-  var m = n
-  while m &gt; 1:
-    if m % 2 == 0:
-      m = m / 2
-    else:
-      m = m * 3 + 1
-    count = count + 1
-  return count
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">collatz</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+  <span class="n">var</span> <span class="n">count</span> <span class="ow">=</span> <span class="mi">0</span>
+  <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span>
+  <span class="n">while</span> <span class="n">m</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="kt">:</span>
+    <span class="kr">if</span> <span class="n">m</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="kt">:</span>
+      <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="kr">else</span><span class="kt">:</span>
+      <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">count</span> <span class="ow">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="n">return</span> <span class="n">count</span>
+</pre></div>
 
 <h2>
 <a name="if-then-else-expressions" class="anchor" href="#if-then-else-expressions"><span class="octicon octicon-link"></span></a>If-Then-Else Expressions</h2>
@@ -464,8 +464,8 @@ baz(x)
 
 <p>For example,</p>
 
-<pre><code>conditional = if 2 &gt; 1 then "ok" else "oops"
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">conditional</span> <span class="ow">=</span> <span class="kr">if</span> <span class="mi">2</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="kr">then</span> <span class="s">"ok"</span> <span class="kr">else</span> <span class="s">"oops"</span>
+</pre></div>
 
 <h2>
 <a name="pattern-matching" class="anchor" href="#pattern-matching"><span class="octicon octicon-link"></span></a>Pattern Matching</h2>
@@ -474,11 +474,11 @@ baz(x)
 
 <p>Pattern matches have the following general form</p>
 
-<pre><code>case value of
-  pattern -&gt; result
-  ...
-  pattern -&gt; result
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="kr">case</span> <span class="n">value</span> <span class="kr">of</span>
+  <span class="n">pattern</span> <span class="ow">-&gt;</span> <span class="n">result</span>
+  <span class="c1">-- ...</span>
+  <span class="n">pattern</span> <span class="ow">-&gt;</span> <span class="n">result</span>
+</pre></div>
 
 <p>The following pattern types are supported:</p>
 
@@ -497,36 +497,36 @@ baz(x)
 
 <p>The wilcard <code>_</code> matches any input and brings nothing into scope:</p>
 
-<pre><code>case x of 
-  _ -&gt; 0
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="kr">case</span> <span class="n">x</span> <span class="kr">of</span> 
+  <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+</pre></div>
 
 <h2>
 <a name="literal-patterns" class="anchor" href="#literal-patterns"><span class="octicon octicon-link"></span></a>Literal Patterns</h2>
 
 <p>Literal patterns are provided to match on primitives:</p>
 
-<pre><code>case booleanValue of 
-  true -&gt; 0
-  false -&gt; 1
+<div class="highlight highlight-haskell"><pre><span class="kr">case</span> <span class="n">booleanValue</span> <span class="kr">of</span> 
+  <span class="n">true</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+  <span class="n">false</span> <span class="ow">-&gt;</span> <span class="mi">1</span>
 
-case stringValue of 
-  "Foo" -&gt; 0
-  _ -&gt; 1
+<span class="kr">case</span> <span class="n">stringValue</span> <span class="kr">of</span> 
+  <span class="s">"Foo"</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+  <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span>
 
-case numericValue of 
-  0 -&gt; 0
-  _ -&gt; 1
-</code></pre>
+<span class="kr">case</span> <span class="n">numericValue</span> <span class="kr">of</span> 
+  <span class="mi">0</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+  <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="mi">1</span>
+</pre></div>
 
 <h2>
 <a name="variable-pattern" class="anchor" href="#variable-pattern"><span class="octicon octicon-link"></span></a>Variable Pattern</h2>
 
 <p>A variable pattern matches any input and binds that input to its name:</p>
 
-<pre><code>case foo(x) of
-  result -&gt; bar(result)
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="kr">case</span> <span class="n">foo</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="kr">of</span>
+  <span class="n">result</span> <span class="ow">-&gt;</span> <span class="n">bar</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
 
 <h2>
 <a name="array-patterns" class="anchor" href="#array-patterns"><span class="octicon octicon-link"></span></a>Array Patterns</h2>
@@ -535,11 +535,11 @@ case numericValue of
 
 <p>For example:</p>
 
-<pre><code>f = \arr -&gt; case arr of
-  [x] -&gt; x
-  [x, y : xs] -&gt; x * y + f(xs)
-  _ -&gt; 0
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">f</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">arr</span> <span class="kr">of</span>
+  <span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+  <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="kt">:</span> <span class="n">xs</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">f</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+  <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+</pre></div>
 
 <p>Here, the first pattern only matches arrays of length one, and brings the first element of the array into scope.</p>
 
@@ -550,10 +550,10 @@ case numericValue of
 
 <p>Record patterns match an input which is a record, and bring its properties into scope.</p>
 
-<pre><code>f = \o -&gt; case o of
-  { foo = "Foo" } -&gt; o.bar
-  _ -&gt; 0
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">f</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">o</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">o</span> <span class="kr">of</span>
+  <span class="p">{</span> <span class="n">foo</span> <span class="ow">=</span> <span class="s">"Foo"</span> <span class="p">}</span> <span class="ow">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="n">bar</span>
+  <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+</pre></div>
 
 <h2>
 <a name="nested-patterns" class="anchor" href="#nested-patterns"><span class="octicon octicon-link"></span></a>Nested Patterns</h2>
@@ -562,21 +562,21 @@ case numericValue of
 
 <p>For example:</p>
 
-<pre><code>f = \o -&gt; case o of
-  { arr = [x:_], take = "car" } -&gt; x
-  { arr = [_,x:_], take = "cadr" } -&gt; x
-  _ -&gt; 0
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">f</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">o</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">o</span> <span class="kr">of</span>
+  <span class="p">{</span> <span class="n">arr</span> <span class="ow">=</span> <span class="p">[</span><span class="n">x</span><span class="kt">:</span><span class="kr">_</span><span class="p">],</span> <span class="n">take</span> <span class="ow">=</span> <span class="s">"car"</span> <span class="p">}</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+  <span class="p">{</span> <span class="n">arr</span> <span class="ow">=</span> <span class="p">[</span><span class="kr">_</span><span class="p">,</span><span class="n">x</span><span class="kt">:</span><span class="kr">_</span><span class="p">],</span> <span class="n">take</span> <span class="ow">=</span> <span class="s">"cadr"</span> <span class="p">}</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+  <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+</pre></div>
 
 <h2>
 <a name="named-patterns" class="anchor" href="#named-patterns"><span class="octicon octicon-link"></span></a>Named Patterns</h2>
 
 <p>Named patterns bring additional names into scope when using nested patterns. Any pattern can be named by using the <code>@</code> symbol:</p>
 
-<pre><code>f = \arr -&gt; case arr of
-  a@[_,_:_] -&gt; a
-  a -&gt; a
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">f</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">arr</span> <span class="kr">of</span>
+  <span class="n">a</span><span class="o">@</span><span class="p">[</span><span class="kr">_</span><span class="p">,</span><span class="kr">_</span><span class="kt">:</span><span class="kr">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+  <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+</pre></div>
 
 <p>Here, in the first pattern, any array with two or more elements will be matched and bound to the variable <code>a</code>.</p>
 
@@ -585,11 +585,11 @@ case numericValue of
 
 <p>Guards are used to impose additional constraints inside a pattern using boolean-valued expressions, and are introduced with a pipe after the pattern:</p>
 
-<pre><code>evens = \arr -&gt; case arr of 
-  [] -&gt; 0
-  [x:xs] | x % 2 == 0 -&gt; 1 + evens xs
-  [_:xs] -&gt; evens xs
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">evens</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">arr</span> <span class="kr">of</span> 
+  <span class="kt">[]</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+  <span class="p">[</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">]</span> <span class="o">|</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">evens</span> <span class="n">xs</span>
+  <span class="p">[</span><span class="kr">_</span><span class="kt">:</span><span class="n">xs</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">evens</span> <span class="n">xs</span>
+</pre></div>
 
 <h2>
 <a name="type-synonyms" class="anchor" href="#type-synonyms"><span class="octicon octicon-link"></span></a>Type Synonyms</h2>
@@ -598,11 +598,11 @@ case numericValue of
 
 <p>For example:</p>
 
-<pre><code>type Foo = { foo :: Number, bar Number }
+<div class="highlight highlight-haskell"><pre><span class="kr">type</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="p">{</span> <span class="n">foo</span> <span class="ow">::</span> <span class="kt">Number</span><span class="p">,</span> <span class="n">bar</span> <span class="kt">Number</span> <span class="p">}</span>
 
-addFoo :: Foo -&gt; Number
-addFoo = \o -&gt; o.foo + o.bar
-</code></pre>
+<span class="nf">addFoo</span> <span class="ow">::</span> <span class="kt">Foo</span> <span class="ow">-&gt;</span> <span class="kt">Number</span>
+<span class="nf">addFoo</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">o</span> <span class="ow">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="n">foo</span> <span class="o">+</span> <span class="n">o</span><span class="o">.</span><span class="n">bar</span>
+</pre></div>
 
 <h2>
 <a name="record-updates" class="anchor" href="#record-updates"><span class="octicon octicon-link"></span></a>Record Updates</h2>
@@ -611,15 +611,15 @@ addFoo = \o -&gt; o.foo + o.bar
 
 <p>For example, the following function increments the <code>foo</code> property on its argument:</p>
 
-<pre><code>incr = \o -&gt; o { foo = o.foo + 1 }
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">incr</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">o</span> <span class="ow">-&gt;</span> <span class="n">o</span> <span class="p">{</span> <span class="n">foo</span> <span class="ow">=</span> <span class="n">o</span><span class="o">.</span><span class="n">foo</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">}</span>
+</pre></div>
 
 <p>The generated Javascript assumes the existence of a method called <code>Object.extend</code> such that <code>Object.extend(o, p)</code> takes an object <code>o</code> and generates a shallow copy of <code>o</code> including the properties of <code>p</code>. A simple JQuery implementation of this specification is</p>
 
-<pre><code>Object.prototype.extend = function(o, p) {
-  return $.extend({}, o, p);
-};
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="kt">Object</span><span class="o">.</span><span class="n">prototype</span><span class="o">.</span><span class="n">extend</span> <span class="ow">=</span> <span class="n">function</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">return</span> <span class="o">$.</span><span class="n">extend</span><span class="p">({},</span> <span class="n">o</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
 
 <h2>
 <a name="operators" class="anchor" href="#operators"><span class="octicon octicon-link"></span></a>Operators</h2>
@@ -628,40 +628,41 @@ addFoo = \o -&gt; o.foo + o.bar
 
 <p>E.g. to create a synonym for string concatenation:</p>
 
-<pre><code>(&lt;&gt;) = \s1 -&gt; \s2 -&gt; s1 ++ s2
+<div class="highlight highlight-haskell"><pre><span class="p">(</span><span class="o">&lt;&gt;</span><span class="p">)</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">s1</span> <span class="ow">-&gt;</span> <span class="nf">\</span><span class="n">s2</span> <span class="ow">-&gt;</span> <span class="n">s1</span> <span class="o">++</span> <span class="n">s2</span>
 
-greeting = "Hello" &lt;&gt; "World!"
-</code></pre>
+<span class="nf">greeting</span> <span class="ow">=</span> <span class="s">"Hello"</span> <span class="o">&lt;&gt;</span> <span class="s">"World!"</span>
+</pre></div>
 
 <p>Regular functions can be used as operators by enclosing their names in backticks:</p>
 
-<pre><code>foo = \x -&gt; \y -&gt; x * y + y
+<div class="highlight highlight-haskell"><pre><span class="nf">foo</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="nf">\</span><span class="n">y</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">y</span>
 
-test = 10 `foo` 20
-</code></pre>
+<span class="nf">test</span> <span class="ow">=</span> <span class="mi">10</span> <span class="p">`</span><span class="n">foo</span><span class="p">`</span> <span class="mi">20</span>
+</pre></div>
 
 <p>Fixity declarations can associate a precedence level, which is a natural number, to a user-defined operator, and specify which way it associates:</p>
 
-<pre><code>infixl 5 &lt;&gt;
-infixr 7 %%
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="kr">infixl</span> <span class="mi">5</span> <span class="o">&lt;&gt;</span>
+<span class="kr">infixr</span> <span class="mi">7</span> <span class="o">%%</span>
+</pre></div>
 
 <h2>
 <a name="foreign-function-interface" class="anchor" href="#foreign-function-interface"><span class="octicon octicon-link"></span></a>Foreign Function Interface</h2>
 
 <p>The <code>extern</code> keyword declares a value which is defined in Javascript, and its type:</p>
 
-<pre><code>extern pow :: (Number, Number) -&gt; Number
-</code></pre>
+<div class="highlight highlight-haskell"><pre><span class="nf">extern</span> <span class="n">pow</span> <span class="ow">::</span> <span class="p">(</span><span class="kt">Number</span><span class="p">,</span> <span class="kt">Number</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Number</span>
+</pre></div>
 
 <p>To declare a new type with no constructors, use <code>extern data</code> and provide the kind:</p>
 
-<pre><code>extern data IO :: * -&gt; *
+<p>extern data IO :: * -&gt; *</p>
 
-extern console :: { 
+<p>extern console :: { 
   log :: String -&gt; IO {} 
-}
-</code></pre>
+}</p>
+
+<pre><code></code></pre>
         </section>
 
         <aside id="sidebar">
