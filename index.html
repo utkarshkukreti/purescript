@@ -93,10 +93,7 @@
 
 <p>The following code defines a <code>Person</code> data type and a function to generate a string representation for a <code>Person</code>:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="kr">data</span> <span class="kt">Person</span> <span class="ow">=</span> <span class="kt">Person</span> 
-  <span class="p">{</span> <span class="n">name</span> <span class="ow">::</span> <span class="kt">String</span>
-  <span class="p">;</span> <span class="n">age</span> <span class="ow">::</span> <span class="kt">Number</span>   
-  <span class="p">}</span>
+<div class="highlight highlight-haskell"><pre><span class="kr">data</span> <span class="kt">Person</span> <span class="ow">=</span> <span class="kt">Person</span> <span class="p">{</span> <span class="n">name</span> <span class="ow">::</span> <span class="kt">String</span><span class="p">,</span> <span class="n">age</span> <span class="ow">::</span> <span class="kt">Number</span> <span class="p">}</span>
 
 <span class="nf">extern</span> <span class="n">numberToString</span> <span class="ow">::</span> <span class="kt">Number</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
 
@@ -160,7 +157,7 @@
 <li>Records
 
 <ul>
-<li>E.g. <code>{ foo :: String ; bar :: Number }</code>
+<li>E.g. <code>{ foo :: String, bar :: Number }</code>
 </li>
 </ul>
 </li>
@@ -309,7 +306,7 @@
 <div class="highlight highlight-haskell"><pre><span class="nf">addProps</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">o</span> <span class="ow">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="n">foo</span> <span class="o">+</span> <span class="n">o</span><span class="o">.</span><span class="n">bar</span>
 </pre></div>
 
-<p>Here, <code>addProps</code> is inferred to have type <code>forall r. { foo :: Number; bar :: Number | r } -&gt; Number</code>. That is, it can take any type which has properties <code>Foo</code> and <code>Bar</code>, and <em>any other record properties</em>.</p>
+<p>Here, <code>addProps</code> is inferred to have type <code>forall r. { foo :: Number, bar :: Number | r } -&gt; Number</code>. That is, it can take any type which has properties <code>Foo</code> and <code>Bar</code>, and <em>any other record properties</em>.</p>
 
 <p>So, the following compiles:</p>
 
