@@ -80,8 +80,8 @@
 <pre><code>-o --output 
     Write the generated Javascript to the specified file
 
--e --externs
-    Write a list of externs declarations to the specified file in addition to generating Javascript output
+-e --foreign imports
+    Write a list of foreign imports declarations to the specified file in addition to generating Javascript output
 </code></pre>
 
 <h2>
@@ -108,7 +108,7 @@
 
 <div class="highlight highlight-haskell"><pre><span class="kr">data</span> <span class="kt">Person</span> <span class="ow">=</span> <span class="kt">Person</span> <span class="p">{</span> <span class="n">name</span> <span class="ow">::</span> <span class="kt">String</span><span class="p">,</span> <span class="n">age</span> <span class="ow">::</span> <span class="kt">Number</span> <span class="p">}</span>
 
-<span class="nf">extern</span> <span class="n">numberToString</span> <span class="ow">::</span> <span class="kt">Number</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
+<span class="nf">foreign</span> <span class="kr">import</span> <span class="nn">numberToString</span> <span class="ow">::</span> <span class="kt">Number</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
 
 <span class="nf">showPerson</span> <span class="ow">::</span> <span class="kt">Person</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
 <span class="nf">showPerson</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">p</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">p</span> <span class="kr">of</span>
@@ -655,18 +655,23 @@
 <h2>
 <a name="foreign-function-interface" class="anchor" href="#foreign-function-interface"><span class="octicon octicon-link"></span></a>Foreign Function Interface</h2>
 
-<p>The <code>extern</code> keyword declares a value which is defined in Javascript, and its type:</p>
+<p>The <code>foreign import</code> keyword declares a value which is defined in Javascript, and its type:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">extern</span> <span class="n">pow</span> <span class="ow">::</span> <span class="p">(</span><span class="kt">Number</span><span class="p">,</span> <span class="kt">Number</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Number</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">foreign</span> <span class="kr">import</span> <span class="nn">pow</span> <span class="ow">::</span> <span class="p">(</span><span class="kt">Number</span><span class="p">,</span> <span class="kt">Number</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Number</span>
 </pre></div>
 
-<p>To declare a new type with no constructors, use <code>extern data</code> and provide the kind:</p>
+<p>To declare a new type with no constructors, use <code>foreign import data</code> and provide the kind:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">extern</span> <span class="kr">data</span> <span class="kt">IO</span> <span class="ow">::</span> <span class="o">*</span> <span class="ow">-&gt;</span> <span class="o">*</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">foreign</span> <span class="kr">import</span> <span class="nn">data</span> <span class="kt">IO</span> <span class="ow">::</span> <span class="o">*</span> <span class="ow">-&gt;</span> <span class="o">*</span>
 
-<span class="nf">extern</span> <span class="n">console</span> <span class="ow">::</span> <span class="p">{</span> 
+<span class="nf">foreign</span> <span class="kr">import</span> <span class="nn">console</span> <span class="ow">::</span> <span class="p">{</span> 
   <span class="n">log</span> <span class="ow">::</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="p">{}</span> 
 <span class="p">}</span>
+</pre></div>
+
+<p>To alias a name of a field defined on a Javascript type to a PureScript function, use <code>foreign import member</code>. For example, to define a function <code>length</code> which accesses the <code>length</code> member of an array:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="nf">foreign</span> <span class="kr">import</span> <span class="nn">member</span> <span class="s">"length"</span> <span class="n">length</span> <span class="ow">::</span> <span class="n">forall</span> <span class="n">a</span><span class="o">.</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">Number</span>
 </pre></div>
       </section>
     </div>
