@@ -261,16 +261,35 @@
 
 <p>Functions in PureScript can have zero or more arguments in general, just like in Javascript.</p>
 
-<p>Functions are introduced by using a backslash followed by a comma separated list of argument names:</p>
+<p>Functions are introduced by using a backslash followed by a list of argument names:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">test1</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">test1</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">a</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
 </pre></div>
 
-<p>which would correspond to the Javascript <code>function test1(a, b, c) { return a + b + c; }</code></p>
+<p>which would correspond to the Javascript </p>
+
+<div class="highlight highlight-javascript"><pre><span class="kd">function</span> <span class="nx">test1</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">b</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Multiple argument functions can be introduced by wrapping the arguments in parentheses, and separating them with commas:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="nf">test1</span> <span class="ow">=</span> <span class="nf">\</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</pre></div>
+
+<p>which generates</p>
+
+<div class="highlight highlight-javascript"><pre><span class="kd">function</span> <span class="nx">test1</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span> 
+  <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
 
 <p>A function taking no arguments would look like this:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">test2</span> <span class="ow">=</span> <span class="nf">\</span> <span class="ow">-&gt;</span> <span class="mi">100</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">test2</span> <span class="ow">=</span> <span class="nf">\</span><span class="nb">()</span> <span class="ow">-&gt;</span> <span class="mi">100</span>
 </pre></div>
 
 <p>which would correspond to the Javascript <code>function test2() { return 100; }</code></p>
@@ -284,7 +303,7 @@
 <p>A special case is made in the case of functions with one argument. These functions can be applied without parentheses, and function application associates to the left:</p>
 
 <div class="highlight highlight-haskell"><pre><span class="c1">-- has type Number -&gt; Number -&gt; Number -&gt; Number</span>
-<span class="nf">addThree</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="nf">\</span><span class="n">b</span> <span class="ow">-&gt;</span> <span class="nf">\</span><span class="n">c</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span>
+<span class="nf">addThree</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span>
 
 <span class="c1">-- has type Number -&gt; Number -&gt; Number</span>
 <span class="nf">addThree</span> <span class="mi">1</span> 
@@ -380,7 +399,7 @@
 <li>If-Then-Else statements</li>
 </ul><p>Here is an example of a power function defined using a block:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">pow</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">pow</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="n">p</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
     <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span>
       <span class="n">for</span> <span class="n">i</span> <span class="ow">&lt;-</span> <span class="mi">0</span> <span class="n">until</span> <span class="n">p</span><span class="kt">:</span>
         <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">n</span>
@@ -634,14 +653,14 @@
 
 <p>E.g. to create a synonym for string concatenation:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="p">(</span><span class="o">&lt;&gt;</span><span class="p">)</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">s1</span> <span class="ow">-&gt;</span> <span class="nf">\</span><span class="n">s2</span> <span class="ow">-&gt;</span> <span class="n">s1</span> <span class="o">++</span> <span class="n">s2</span>
+<div class="highlight highlight-haskell"><pre><span class="p">(</span><span class="o">&lt;&gt;</span><span class="p">)</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">s1</span> <span class="n">s2</span> <span class="ow">-&gt;</span> <span class="n">s1</span> <span class="o">++</span> <span class="n">s2</span>
 
 <span class="nf">greeting</span> <span class="ow">=</span> <span class="s">"Hello"</span> <span class="o">&lt;&gt;</span> <span class="s">"World!"</span>
 </pre></div>
 
 <p>Regular functions can be used as operators by enclosing their names in backticks:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">foo</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="nf">\</span><span class="n">y</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">y</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">foo</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">x</span> <span class="n">y</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">y</span>
 
 <span class="nf">test</span> <span class="ow">=</span> <span class="mi">10</span> <span class="p">`</span><span class="n">foo</span><span class="p">`</span> <span class="mi">20</span>
 </pre></div>
