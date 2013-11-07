@@ -40,6 +40,7 @@ typeLiterals = Pattern $ A.Kleisli match
   match Boolean = Just "Boolean"
   match (Array ty) = Just $ "[" ++ prettyPrintType ty ++ "]"
   match (Object row) = Just $ "{ " ++ prettyPrintRow row ++ " }"
+  match (Variant row) = Just $ "< " ++ prettyPrintRow row ++ " >"
   match (TypeVar var) = Just var
   match (TypeConstructor ctor) = Just ctor
   match (TUnknown u) = Just $ 'u' : show u

@@ -30,8 +30,7 @@ data Associativity = Infixl | Infixr deriving (Show, D.Data, D.Typeable)
 data Fixity = Fixity Associativity Precedence deriving (Show, D.Data, D.Typeable)
 
 data Declaration
-  = DataDeclaration String [String] [(String, Maybe Type)]
-  | TypeSynonymDeclaration String [String] Type
+  = TypeSynonymDeclaration String [String] Type
   | TypeDeclaration Ident PolyType
   | ValueDeclaration Ident Value
   | ExternDeclaration Ident PolyType

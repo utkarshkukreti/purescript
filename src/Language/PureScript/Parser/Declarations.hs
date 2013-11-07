@@ -37,15 +37,6 @@ import Language.PureScript.Parser.Values
 import Language.PureScript.Parser.Types
 import Language.PureScript.Parser.Kinds
 
-parseDataDeclaration :: P.Parsec String ParseState Declaration
-parseDataDeclaration = do
-  reserved "data"
-  name <- indented *> properName
-  tyArgs <- many (indented *> identifier)
-  lexeme $ indented *> P.char '='
-  ctors <- P.sepBy1 ((,) <$> (indented *> properName) <*> P.optionMaybe parseType) (lexeme $ indented *> P.char '|')
-  return $ DataDeclaration name tyArgs ctors
-
 parseTypeDeclaration :: P.Parsec String ParseState Declaration
 parseTypeDeclaration =
   TypeDeclaration <$> P.try (parseIdent <* lexeme (indented *> P.string "::"))
@@ -92,8 +83,7 @@ parseFixityDeclaration = do
 
 parseDeclaration :: P.Parsec String ParseState Declaration
 parseDeclaration = P.choice
-                   [ parseDataDeclaration
-                   , parseTypeDeclaration
+                   [ parseTypeDeclaration
                    , parseTypeSynonymDeclaration
                    , parseValueDeclaration
                    , parseExternDeclaration

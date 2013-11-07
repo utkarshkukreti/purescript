@@ -97,6 +97,10 @@ kindConstraints m o@(Object row) = do
   me <- fresh
   (cs, r, m') <- kindConstraintsForRow m row
   return (KindConstraint me Star (TypeOrigin o) : KindConstraint r Row (RowOrigin row) : cs, me, m')
+kindConstraints m v@(Variant row) = do
+  me <- fresh
+  (cs, r, m') <- kindConstraintsForRow m row
+  return (KindConstraint me Star (TypeOrigin v) : KindConstraint r Row (RowOrigin row) : cs, me, m')
 kindConstraints m f@(Function args ret) = do
   me <- fresh
   (cs, ns, m') <- kindConstraintsAll m args

@@ -25,6 +25,7 @@ data Type
   | Boolean
   | Array Type
   | Object Row
+  | Variant Row
   | Function [Type] Type
   | TypeVar String
   | TypeConstructor String

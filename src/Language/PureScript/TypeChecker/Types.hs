@@ -325,13 +325,8 @@ typeConstraints m (Block ss) = do
   guardWith "Block is missing a return statement" allCodePathsReturn
   return (cs, ret)
 typeConstraints m v@(Constructor c) = do
-  env <- getEnv
-  case M.lookup c (dataConstructors env) of
-    Nothing -> throwError $ "Constructor " ++ c ++ " is undefined"
-    Just (PolyType idents ty) -> do
-      me <- fresh
-      replaced <- replaceVarsWithUnknowns idents ty
-      return ([TypeConstraint me replaced (ValueOrigin v)], me)
+  [rest, ty, me] <- replicateM 3 fresh
+  return ([TypeConstraint me (Function [TUnknown ty] (Variant (RCons c (TUnknown ty) (RUnknown rest)))) (ValueOrigin v)], me)
 typeConstraints m (Case val binders) = do
   (cs1, n1) <- typeConstraints m val
   ret <- fresh
@@ -392,23 +387,10 @@ typeConstraintsForBinder val b@(BooleanBinder _) = constantBinder b val Boolean
 typeConstraintsForBinder val b@(VarBinder name) = do
   me <- fresh
   return ([TypeConstraint me (TUnknown val) (BinderOrigin b)], M.singleton name me)
-typeConstraintsForBinder val b@(NullaryBinder ctor) = do
-  env <- getEnv
-  case M.lookup ctor (dataConstructors env) of
-    Just (PolyType args ret) -> do
-      ret' <- replaceVarsWithUnknowns args ret
-      return ([TypeConstraint val ret' (BinderOrigin b)], M.empty)
-    _ -> throwError $ "Constructor " ++ ctor ++ " is not defined"
-typeConstraintsForBinder val b@(UnaryBinder ctor binder) = do
-  env <- getEnv
-  case M.lookup ctor (dataConstructors env) of
-    Just (PolyType idents f@(Function [_] _)) -> do
-      obj <- fresh
-      (Function [ty] ret) <- replaceVarsWithUnknowns idents f
-      (cs, m1) <- typeConstraintsForBinder obj binder
-      return (TypeConstraint val ret (BinderOrigin b) : TypeConstraint obj ty (BinderOrigin b) : cs, m1)
-    Just _ -> throwError $ ctor ++ " is not a unary constructor"
-    _ -> throwError $ "Constructor " ++ ctor ++ " is not defined"
+typeConstraintsForBinder val b@(ConstructorBinder ctor binder) = do
+  [me, obj, rest] <- replicateM 3 fresh
+  (cs, m1) <- typeConstraintsForBinder obj binder
+  return (TypeConstraint val (Variant (RCons ctor (TUnknown obj) (RUnknown rest))) (BinderOrigin b) : cs, m1)
 typeConstraintsForBinder val b@(ObjectBinder props) = do
   row <- fresh
   rest <- fresh
@@ -585,6 +567,7 @@ unifyTypes _ String String = return []
 unifyTypes _ Boolean Boolean = return []
 unifyTypes o (Array s) (Array t) = unifyTypes o s t
 unifyTypes o (Object row1) (Object row2) = unifyRows o row1 row2
+unifyTypes o (Variant row1) (Variant row2) = unifyRows o row1 row2
 unifyTypes o (Function args1 ret1) (Function args2 ret2) = do
   guardWith "Function applied to incorrect number of args" $ length args1 == length args2
   cs1 <- fmap concat $ zipWithM (unifyTypes o) args1 args2

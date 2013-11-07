@@ -39,7 +39,10 @@ parseArray :: P.Parsec String ParseState Type
 parseArray = squares $ Array <$> parseType
 
 parseObject :: P.Parsec String ParseState Type
-parseObject = braces $ Object <$> parseRow
+parseObject = braces $ Object <$> parseRow parseNameAndType ','
+
+parseVariant :: P.Parsec String ParseState Type
+parseVariant = angles $ Variant <$> parseRow parseVariantLabelAndType '|'
 
 parseFunction :: P.Parsec String ParseState Type
 parseFunction = do
@@ -61,6 +64,7 @@ parseTypeAtom = indented *> P.choice (map P.try
             , parseBoolean
             , parseArray
             , parseObject
+            , parseVariant
             , parseFunction
             , parseTypeVariable
             , parseTypeConstructor
@@ -80,11 +84,14 @@ parseType = (P.buildExpressionParser operators . buildPostfixParser postfixTable
 parseNameAndType :: P.Parsec String ParseState (String, Type)
 parseNameAndType = (,) <$> (indented *> identifier <* indented <* lexeme (P.string "::")) <*> parseType
 
+parseVariantLabelAndType :: P.Parsec String ParseState (String, Type)
+parseVariantLabelAndType = (,) <$> (indented *> properName) <*> (indented *> parseType)
+
 parseRowEnding :: P.Parsec String ParseState Row
 parseRowEnding = P.option REmpty (RowVar <$> (lexeme (indented *> P.char '|') *> indented *> identifier))
 
-parseRow :: P.Parsec String ParseState Row
-parseRow = (fromList <$> (parseNameAndType `P.sepBy` (indented *> comma)) <*> parseRowEnding) P.<?> "row"
+parseRow :: P.Parsec String ParseState (String, Type) -> Char -> P.Parsec String ParseState Row
+parseRow rowItem sep = (fromList <$> (rowItem `P.sepBy` (indented *> (lexeme (P.char sep)))) <*> parseRowEnding) P.<?> "row"
   where
   fromList :: [(String, Type)] -> Row -> Row
   fromList [] r = r

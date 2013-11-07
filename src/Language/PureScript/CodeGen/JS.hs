@@ -38,14 +38,6 @@ declToJs (ValueDeclaration ident (Abs args ret)) = Just [JSFunction (Just ident)
 declToJs (ValueDeclaration ident val) = Just [JSVariableIntroduction ident (valueToJs val)]
 declToJs (ExternMemberDeclaration member ident _) =
   Just [JSFunction (Just ident) [Ident "value"] (JSBlock [JSReturn (JSAccessor member (JSVar (Ident "value")))])]
-declToJs (DataDeclaration _ _ ctors) =
-  Just $ flip map ctors $ \(ctor, maybeTy) ->
-    case maybeTy of
-      Nothing -> JSVariableIntroduction (Ident ctor) (JSObjectLiteral [ ("ctor", JSStringLiteral ctor) ])
-      Just _ -> JSFunction (Just (Ident ctor)) [Ident "value"]
-                  (JSBlock [JSReturn
-                    (JSObjectLiteral [ ("ctor", JSStringLiteral ctor)
-                                     , ("value", JSVar (Ident "value")) ])])
 declToJs _ = Nothing
 
 valueToJs :: Value -> JS
@@ -55,7 +47,7 @@ valueToJs (BooleanLiteral b) = JSBooleanLiteral b
 valueToJs (ArrayLiteral xs) = JSArrayLiteral (map valueToJs xs)
 valueToJs (ObjectLiteral ps) = JSObjectLiteral (map (second valueToJs) ps)
 valueToJs (ObjectUpdate o ps) = JSApp (JSAccessor "extend" (JSVar (Ident "Object"))) [ valueToJs o, JSObjectLiteral (map (second valueToJs) ps)]
-valueToJs (Constructor name) = JSVar (Ident name)
+valueToJs (Constructor name) = JSApp (JSVar (Ident "__ctor")) [JSStringLiteral name]
 valueToJs (Block sts) = JSApp (JSFunction Nothing [] (JSBlock (map statementToJs sts))) []
 valueToJs (Case value binders) = runGen (bindersToJs binders (valueToJs value))
 valueToJs (IfThenElse cond th el) = JSConditional (valueToJs cond) (valueToJs th) (valueToJs el)
@@ -87,9 +79,7 @@ binderToJs varName done (BooleanBinder False) =
   return [JSIfElse (JSUnary Not (JSVar (Ident varName))) (JSBlock done) Nothing]
 binderToJs varName done (VarBinder ident) =
   return (JSVariableIntroduction ident (JSVar (Ident varName)) : done)
-binderToJs varName done (NullaryBinder ctor) =
-  return [JSIfElse (JSBinary EqualTo (JSAccessor "ctor" (JSVar (Ident varName))) (JSStringLiteral ctor)) (JSBlock done) Nothing]
-binderToJs varName done (UnaryBinder ctor b) = do
+binderToJs varName done (ConstructorBinder ctor b) = do
   value <- fresh
   js <- binderToJs value done b
   return [JSIfElse (JSBinary EqualTo (JSAccessor "ctor" (JSVar (Ident varName))) (JSStringLiteral ctor)) (JSBlock (JSVariableIntroduction (Ident value) (JSAccessor "value" (JSVar (Ident varName))) : js)) Nothing]

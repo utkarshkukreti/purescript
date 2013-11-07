@@ -41,21 +41,6 @@ import Control.Monad.Error
 
 typeCheckAll :: [Declaration] -> Check ()
 typeCheckAll [] = return ()
-typeCheckAll (DataDeclaration name args dctors : rest) = do
-  rethrow (("Error in type constructor " ++ name ++ ": ") ++) $ do
-    env <- getEnv
-    guardWith (name ++ " is already defined") $ not $ M.member name (types env)
-    ctorKind <- kindsOf (Just name) args (mapMaybe snd dctors)
-    putEnv $ env { types = M.insert name (ctorKind, Data) (types env) }
-    forM_ dctors $ \(dctor, maybeTy) ->
-      rethrow (("Error in data constructor " ++ name ++ ": ") ++) $ do
-        env' <- getEnv
-        guardWith (dctor ++ " is already defined") $ not $ M.member dctor (dataConstructors env')
-        let retTy = foldl TypeApp (TypeConstructor name) (map TypeVar args)
-        let dctorTy = maybe retTy (\ty -> Function [ty] retTy) maybeTy
-        let polyType = PolyType args dctorTy
-        putEnv $ env' { dataConstructors = M.insert dctor polyType (dataConstructors env') }
-  typeCheckAll rest
 typeCheckAll (TypeSynonymDeclaration name args ty : rest) = do
   rethrow (("Error in type synonym " ++ name ++ ": ") ++) $ do
     env <- getEnv

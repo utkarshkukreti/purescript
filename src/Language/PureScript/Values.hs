@@ -89,8 +89,7 @@ data Binder
   | StringBinder String
   | NumberBinder (Either Integer Double)
   | VarBinder Ident
-  | NullaryBinder String
-  | UnaryBinder String Binder
+  | ConstructorBinder String Binder
   | ObjectBinder [(String, Binder)]
   | ArrayBinder [Binder] (Maybe Binder)
   | NamedBinder Ident Binder
