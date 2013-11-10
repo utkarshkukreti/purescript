@@ -102,7 +102,24 @@
 <p>PureScript can also be seen as a trade-off between a theoretically ideal language and one which generates reasonably high performance code.</p>
 
 <h2>
-<a name="first-example" class="anchor" href="#first-example"><span class="octicon octicon-link"></span></a>First Example</h2>
+<a name="hello-purescript" class="anchor" href="#hello-purescript"><span class="octicon octicon-link"></span></a>Hello, PureScript!</h2>
+
+<p>As an introductory example, here is the usual "Hello World" written in PureScript:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="nf">foreign</span> <span class="kr">import</span> <span class="nn">console</span> <span class="ow">::</span> <span class="p">{</span> <span class="n">log</span> <span class="ow">::</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">{}</span> <span class="p">}</span>
+
+<span class="nf">main</span> <span class="ow">=</span> <span class="nf">\</span><span class="nb">()</span> <span class="ow">-&gt;</span> <span class="n">console</span><span class="o">.</span><span class="n">log</span> <span class="s">"Hello, World!"</span>
+</pre></div>
+
+<p>which compiles to the following Javascript:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Hello, World!"</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="another-example" class="anchor" href="#another-example"><span class="octicon octicon-link"></span></a>Another Example</h2>
 
 <p>The following code defines a <code>Person</code> data type and a function to generate a string representation for a <code>Person</code>:</p>
 
