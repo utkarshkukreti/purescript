@@ -705,6 +705,35 @@
 </pre></div>
 
 <h2>
+<a name="modules" class="anchor" href="#modules"><span class="octicon octicon-link"></span></a>Modules</h2>
+
+<p>Simple modules are supported by the <code>module</code> keyword.</p>
+
+<p>Introduce a module as follows, with a list of indented declarations:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="kr">module</span> <span class="nn">A</span> <span class="kr">where</span>
+
+    <span class="n">foo</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+</pre></div>
+
+<p>Modules may be nested:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="kr">module</span> <span class="nn">A</span> <span class="kr">where</span>
+
+    <span class="n">foo</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+
+    <span class="kr">module</span> <span class="nn">B</span> <span class="kr">where</span>
+
+        <span class="n">bar</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">y</span> <span class="ow">-&gt;</span> <span class="n">y</span>
+</pre></div>
+
+<p>Names may be qualified by using a colon:</p>
+
+<pre><code>foo = A:foo
+bar = A:B:bar
+</code></pre>
+
+<h2>
 <a name="foreign-function-interface" class="anchor" href="#foreign-function-interface"><span class="octicon octicon-link"></span></a>Foreign Function Interface</h2>
 
 <p>The <code>foreign import</code> keyword declares a value which is defined in Javascript, and its type:</p>
