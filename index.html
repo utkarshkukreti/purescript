@@ -51,6 +51,12 @@
 <li>Pattern matching</li>
 <li>Simple FFI</li>
 </ul><h2>
+<a name="experimental-features" class="anchor" href="#experimental-features"><span class="octicon octicon-link"></span></a>Experimental Features</h2>
+
+<ul>
+<li>Modules</li>
+<li>Rank N Types</li>
+</ul><h2>
 <a name="try-it" class="anchor" href="#try-it"><span class="octicon octicon-link"></span></a>Try It!</h2>
 
 <p>Try PureScript in the browser <a href="http://tryps.functorial.com/">here</a>.</p>
@@ -386,6 +392,28 @@
 <p>since the <code>bar</code> property is missing.</p>
 
 <p>Again, a type annotation can be provided if necessary.</p>
+
+<h2>
+<a name="rank-n-types-experimental-feature" class="anchor" href="#rank-n-types-experimental-feature"><span class="octicon octicon-link"></span></a>Rank N Types (Experimental Feature)</h2>
+
+<p>It is also possible for the <code>forall</code> quantifier to appear on the left of a function arrow, inside types record fields and data constructors, and in type synonyms.</p>
+
+<p>In most cases, a type annotation is necessary when using this feature.</p>
+
+<p>As an example, we can pass a polymorphic function as an argument to another function:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="nf">poly</span> <span class="ow">::</span> <span class="p">(</span><span class="n">forall</span> <span class="n">a</span><span class="o">.</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Boolean</span>
+<span class="nf">poly</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">f</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">f</span> <span class="n">true</span>
+</pre></div>
+
+<p>Notice that the polymorphic function's type argument is instantiated to both <code>Number</code> and <code>Boolean</code>.</p>
+
+<p>An argument to <code>poly</code> must indeed be polymorphic. For example, the following fails:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="nf">test</span> <span class="ow">=</span> <span class="n">poly</span> <span class="p">(</span><span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+<p>since the skolemized type variable <code>a</code> does not unify with <code>Number</code>.</p>
 
 <h2>
 <a name="type-inference" class="anchor" href="#type-inference"><span class="octicon octicon-link"></span></a>Type Inference</h2>
@@ -727,11 +755,21 @@
         <span class="n">bar</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">y</span> <span class="ow">-&gt;</span> <span class="n">y</span>
 </pre></div>
 
-<p>Names may be qualified by using a colon:</p>
+<p>Names may be qualified by using a dot:</p>
 
-<pre><code>foo = A:foo
-bar = A:B:bar
+<pre><code>foo = A.foo
+bar = A.B.bar
 </code></pre>
+
+<p>All the names in a module can be aliased using the <code>import</code> declaration:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="kr">import</span> <span class="nn">A</span>
+</pre></div>
+
+<p>You can also limit which names are going to be aliased:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="kr">import</span> <span class="nn">A.B</span> <span class="p">(</span><span class="nf">bar</span><span class="p">)</span>
+</pre></div>
 
 <h2>
 <a name="foreign-function-interface" class="anchor" href="#foreign-function-interface"><span class="octicon octicon-link"></span></a>Foreign Function Interface</h2>
