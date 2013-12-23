@@ -443,11 +443,9 @@
 </pre></div>
 
 <h2>
-<a name="do-notation" class="anchor" href="#do-notation"><span class="octicon octicon-link"></span></a>Do Notation</h2>
+<a name="blocks" class="anchor" href="#blocks"><span class="octicon octicon-link"></span></a>Blocks</h2>
 
-<p>There is a keyword <code>do</code>, which does not have the same purpose as the <code>do</code> keyword in Haskell.</p>
-
-<p><code>do</code> introduces a block. Blocks consist of statements, and must return a value of the same type on every branch of execution.</p>
+<p>Blocks are collections of statements wrapped in braces <code>{ ... }</code>. Blocks must return a value of the same type on every branch of execution.</p>
 
 <p>The following types of statement are supported:</p>
 
@@ -458,32 +456,37 @@
 <li>For-each loops</li>
 <li>While loops</li>
 <li>If-Then-Else statements</li>
+<li>Naked expressions</li>
 </ul><p>Here is an example of a power function defined using a block:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">pow</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="n">p</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
-    <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span>
-      <span class="n">for</span> <span class="n">i</span> <span class="ow">&lt;-</span> <span class="mi">0</span> <span class="n">until</span> <span class="n">p</span><span class="kt">:</span>
-        <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">n</span>
-      <span class="n">return</span> <span class="n">m</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">pow</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="n">p</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span><span class="p">;</span>
+    <span class="n">for</span> <span class="p">(</span><span class="n">i</span> <span class="ow">&lt;-</span> <span class="mi">0</span> <span class="n">until</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">n</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">return</span> <span class="n">m</span><span class="p">;</span>
+  <span class="p">}</span>
 </pre></div>
 
 <p>Blocks enable local mutation of their variables, but mutation is not allowed in general. The type system prevents mutable variables from escaping their scope.</p>
 
 <p>That is, while the example above is valid, the following does not compile:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">incr</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
-  <span class="n">n</span> <span class="ow">=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span> 
-  <span class="n">return</span> <span class="n">n</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">incr</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+    <span class="n">n</span> <span class="ow">=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">return</span> <span class="n">n</span><span class="p">;</span>
+  <span class="p">}</span>
 </pre></div>
 
 <p>The variable <code>n</code> is not mutable, and so the assignment in the first line of the <code>do</code> block is not allowed.</p>
 
 <p>This function can be rewritten as follows:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">incr</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
-  <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span>
-  <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span> 
-  <span class="n">return</span> <span class="n">m</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">incr</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span><span class="p">;</span>
+    <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">return</span> <span class="n">m</span><span class="p">;</span>
+  <span class="p">}</span>
 </pre></div>
 
 <h2>
@@ -491,11 +494,13 @@
 
 <p>For loops look like this:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">total</span> <span class="ow">=</span> <span class="kr">do</span>
-  <span class="n">var</span> <span class="n">n</span> <span class="ow">=</span> <span class="mi">0</span>
-  <span class="n">for</span> <span class="n">i</span> <span class="ow">&lt;-</span> <span class="mi">0</span> <span class="n">until</span> <span class="mi">10</span><span class="kt">:</span>
-  <span class="n">n</span> <span class="ow">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">i</span>
-  <span class="n">return</span> <span class="n">n</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">total</span> <span class="ow">=</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">n</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">for</span> <span class="p">(</span><span class="n">i</span> <span class="ow">&lt;-</span> <span class="mi">0</span> <span class="n">until</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">n</span> <span class="ow">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">i</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">return</span> <span class="n">n</span><span class="p">;</span>
+  <span class="p">}</span>
 </pre></div>
 
 <p>The bounds <code>0</code> and <code>10</code> are inclusive and exclusive respectively.</p>
@@ -505,11 +510,13 @@
 
 <p>For each loops loop over the elements in an array using the <code>Object.forEach</code> method. A polyfill may be required for some browsers:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">total</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
-  <span class="n">var</span> <span class="n">n</span> <span class="ow">=</span> <span class="mi">0</span>
-  <span class="n">foreach</span> <span class="n">i</span> <span class="kr">in</span> <span class="n">arr</span><span class="kt">:</span>
-    <span class="n">n</span> <span class="ow">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">i</span>
-  <span class="n">return</span> <span class="n">n</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">total</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">n</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">foreach</span> <span class="p">(</span><span class="n">i</span> <span class="kr">in</span> <span class="n">arr</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">n</span> <span class="ow">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">i</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">return</span> <span class="n">n</span><span class="p">;</span>
+  <span class="p">}</span>
 </pre></div>
 
 <h2>
@@ -517,13 +524,15 @@
 
 <p>The syntax of a while loop is similar to a foreach loop:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">log2</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
-  <span class="n">var</span> <span class="n">count</span> <span class="ow">=</span> <span class="mi">0</span>
-  <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span>
-  <span class="n">while</span> <span class="n">m</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="kt">:</span>
-    <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">/</span> <span class="mi">2</span>
-    <span class="n">count</span> <span class="ow">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
-  <span class="n">return</span> <span class="n">count</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">log2</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">count</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span><span class="p">;</span>
+    <span class="n">while</span> <span class="p">(</span><span class="n">m</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+      <span class="n">count</span> <span class="ow">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">return</span> <span class="n">count</span><span class="p">;</span>
+  <span class="p">}</span>
 </pre></div>
 
 <h2>
@@ -531,16 +540,30 @@
 
 <p>Else branches are optional, and may contain further <code>if</code> statements, just as in Javascript:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">collatz</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
-  <span class="n">var</span> <span class="n">count</span> <span class="ow">=</span> <span class="mi">0</span>
-  <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span>
-  <span class="n">while</span> <span class="n">m</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="kt">:</span>
-    <span class="kr">if</span> <span class="n">m</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="kt">:</span>
-      <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">/</span> <span class="mi">2</span>
-    <span class="kr">else</span><span class="kt">:</span>
-      <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">count</span> <span class="ow">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
-  <span class="n">return</span> <span class="n">count</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">collatz</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+    <span class="n">var</span> <span class="n">count</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span><span class="p">;</span>
+    <span class="n">while</span> <span class="p">(</span><span class="n">m</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kr">if</span> <span class="p">(</span><span class="n">m</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+      <span class="p">}</span> <span class="kr">else</span> <span class="p">{</span>
+        <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="n">count</span> <span class="ow">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">return</span> <span class="n">count</span><span class="p">;</span>
+  <span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="naked-expressions-as-statements" class="anchor" href="#naked-expressions-as-statements"><span class="octicon octicon-link"></span></a>Naked Expressions as Statements</h2>
+
+<p>Any expression with the empty type <code>{ }</code> can be used as a statement in a block. For example, method calls which return <code>{ }</code>:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="nf">example</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="n">m</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+    <span class="n">console</span><span class="o">.</span><span class="n">log</span> <span class="s">"Adding two numbers"</span>
+    <span class="n">return</span> <span class="n">n</span> <span class="o">+</span> <span class="n">m</span><span class="p">;</span>
+  <span class="p">}</span>
 </pre></div>
 
 <h2>
@@ -573,6 +596,7 @@
 <li>Literal patterns</li>
 <li>Variable pattern</li>
 <li>Array patterns</li>
+<li>Cons patterns</li>
 <li>Record patterns</li>
 <li>Named patterns</li>
 <li>Guards</li>
@@ -623,13 +647,30 @@
 
 <div class="highlight highlight-haskell"><pre><span class="nf">f</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">arr</span> <span class="kr">of</span>
   <span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">x</span>
-  <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="kt">:</span> <span class="n">xs</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">f</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+  <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">f</span> <span class="n">xs</span>
   <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
 </pre></div>
 
 <p>Here, the first pattern only matches arrays of length one, and brings the first element of the array into scope.</p>
 
-<p>The second pattern matches arrays with two or more elements, and brings the first and second elements into scope, along with the remainder of the array as the variable <code>xs</code>.</p>
+<p>The second pattern matches arrays with two elements, and brings the first and second elements into scope.</p>
+
+<h2>
+<a name="cons-patterns" class="anchor" href="#cons-patterns"><span class="octicon octicon-link"></span></a>Cons Patterns</h2>
+
+<p>The head and tail of a non-empty array can be matched by using a cons pattern:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="nf">add</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">arr</span> <span class="kr">of</span>
+  <span class="kt">[]</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+  <span class="n">x</span> <span class="kt">:</span> <span class="n">xs</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">add</span> <span class="n">xs</span>
+</pre></div>
+
+<p><code>:</code> associates to the right:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="nf">addPairs</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">arr</span> <span class="kr">of</span>
+  <span class="n">x</span> <span class="kt">:</span> <span class="n">y</span> <span class="kt">:</span> <span class="n">xs</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">addPairs</span> <span class="n">xs</span>
+  <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
+</pre></div>
 
 <h2>
 <a name="record-patterns" class="anchor" href="#record-patterns"><span class="octicon octicon-link"></span></a>Record Patterns</h2>
@@ -649,8 +690,8 @@
 <p>For example:</p>
 
 <div class="highlight highlight-haskell"><pre><span class="nf">f</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">o</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">o</span> <span class="kr">of</span>
-  <span class="p">{</span> <span class="n">arr</span> <span class="ow">=</span> <span class="p">[</span><span class="n">x</span><span class="kt">:</span><span class="kr">_</span><span class="p">],</span> <span class="n">take</span> <span class="ow">=</span> <span class="s">"car"</span> <span class="p">}</span> <span class="ow">-&gt;</span> <span class="n">x</span>
-  <span class="p">{</span> <span class="n">arr</span> <span class="ow">=</span> <span class="p">[</span><span class="kr">_</span><span class="p">,</span><span class="n">x</span><span class="kt">:</span><span class="kr">_</span><span class="p">],</span> <span class="n">take</span> <span class="ow">=</span> <span class="s">"cadr"</span> <span class="p">}</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+  <span class="p">{</span> <span class="n">arr</span> <span class="ow">=</span> <span class="n">x</span> <span class="kt">:</span> <span class="kr">_</span><span class="p">,</span> <span class="n">take</span> <span class="ow">=</span> <span class="s">"car"</span> <span class="p">}</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+  <span class="p">{</span> <span class="n">arr</span> <span class="ow">=</span> <span class="kr">_</span> <span class="kt">:</span> <span class="n">x</span> <span class="kt">:</span> <span class="kr">_</span><span class="p">,</span> <span class="n">take</span> <span class="ow">=</span> <span class="s">"cadr"</span> <span class="p">}</span> <span class="ow">-&gt;</span> <span class="n">x</span>
   <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
 </pre></div>
 
@@ -660,8 +701,8 @@
 <p>Named patterns bring additional names into scope when using nested patterns. Any pattern can be named by using the <code>@</code> symbol:</p>
 
 <div class="highlight highlight-haskell"><pre><span class="nf">f</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">arr</span> <span class="kr">of</span>
-  <span class="n">a</span><span class="o">@</span><span class="p">[</span><span class="kr">_</span><span class="p">,</span><span class="kr">_</span><span class="kt">:</span><span class="kr">_</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">a</span>
-  <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">a</span>
+  <span class="n">a</span><span class="o">@</span><span class="p">(</span><span class="kr">_</span> <span class="kt">:</span> <span class="kr">_</span> <span class="kt">:</span> <span class="kr">_</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">true</span>
+  <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">false</span>
 </pre></div>
 
 <p>Here, in the first pattern, any array with two or more elements will be matched and bound to the variable <code>a</code>.</p>
@@ -673,8 +714,8 @@
 
 <div class="highlight highlight-haskell"><pre><span class="nf">evens</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">arr</span> <span class="kr">of</span> 
   <span class="kt">[]</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
-  <span class="p">[</span><span class="n">x</span><span class="kt">:</span><span class="n">xs</span><span class="p">]</span> <span class="o">|</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">evens</span> <span class="n">xs</span>
-  <span class="p">[</span><span class="kr">_</span><span class="kt">:</span><span class="n">xs</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="n">evens</span> <span class="n">xs</span>
+  <span class="n">x</span> <span class="kt">:</span> <span class="n">xs</span> <span class="o">|</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">evens</span> <span class="n">xs</span>
+  <span class="kr">_</span> <span class="kt">:</span> <span class="n">xs</span> <span class="ow">-&gt;</span> <span class="n">evens</span> <span class="n">xs</span>
 </pre></div>
 
 <h2>
