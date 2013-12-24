@@ -38,6 +38,8 @@
 
 <p>A small strongly, statically typed compile-to-JS language with basic extensible records and type-safe blocks</p>
 
+<p>Bitcoin donations are gratefully accepted at 14ZhCym28WDuFhocP44tU1dBpCzjX1DvhF.</p>
+
 <h2>
 <a name="current-features" class="anchor" href="#current-features"><span class="octicon octicon-link"></span></a>Current Features</h2>
 
@@ -162,7 +164,7 @@
 
 <span class="kd">function</span> <span class="nx">showPerson</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">ctor</span> <span class="o">===</span> <span class="s2">"Person"</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s2">", aged "</span> <span class="o">+</span> <span class="nx">itoa</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">age</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s2">", aged "</span> <span class="o">+</span> <span class="nx">numberToString</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">age</span><span class="p">)</span>
   <span class="p">};</span>
   <span class="k">throw</span> <span class="s2">"Failed pattern match"</span> 
 <span class="p">}</span>
