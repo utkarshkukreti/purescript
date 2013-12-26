@@ -116,7 +116,7 @@
 
 <div class="highlight highlight-haskell"><pre><span class="nf">foreign</span> <span class="kr">import</span> <span class="nn">console</span> <span class="ow">::</span> <span class="p">{</span> <span class="n">log</span> <span class="ow">::</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">{}</span> <span class="p">}</span>
 
-<span class="nf">main</span> <span class="ow">=</span> <span class="nf">\</span><span class="nb">()</span> <span class="ow">-&gt;</span> <span class="n">console</span><span class="o">.</span><span class="n">log</span> <span class="s">"Hello, World!"</span>
+<span class="nf">main</span> <span class="ow">=</span> <span class="nf">\</span> <span class="ow">-&gt;</span> <span class="n">console</span><span class="o">.</span><span class="n">log</span> <span class="s">"Hello, World!"</span>
 </pre></div>
 
 <p>which compiles to the following Javascript:</p>
@@ -136,8 +136,7 @@
 <span class="nf">foreign</span> <span class="kr">import</span> <span class="nn">numberToString</span> <span class="ow">::</span> <span class="kt">Number</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
 
 <span class="nf">showPerson</span> <span class="ow">::</span> <span class="kt">Person</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
-<span class="nf">showPerson</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">p</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">p</span> <span class="kr">of</span>
-  <span class="kt">Person</span> <span class="n">o</span> <span class="ow">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="n">name</span> <span class="o">++</span> <span class="s">", aged "</span> <span class="o">++</span> <span class="n">numberToString</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+<span class="nf">showPerson</span> <span class="p">(</span><span class="kt">Person</span> <span class="n">o</span><span class="p">)</span> <span class="ow">=</span> <span class="n">o</span><span class="o">.</span><span class="n">name</span> <span class="o">++</span> <span class="s">", aged "</span> <span class="o">++</span> <span class="n">numberToString</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
 </pre></div>
 
 <p>Line by line, this reads as follows:</p>
@@ -155,19 +154,19 @@
 <li>The <code>showPerson</code> function takes a <code>Person</code> and returns a <code>String</code>
 </li>
 <li>
-<code>showPerson</code> works by case analysis on its argument <code>p</code>, first matching the constructor <code>Person</code> and then using string concatenation and object accessors to return its result.</li>
+<code>showPerson</code> works by case analysis on its argument, first matching the constructor <code>Person</code> and then using string concatenation and object accessors to return its result.</li>
 </ul><p>The generated Javascript looks like this:</p>
 
 <div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">Person</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span> 
-  <span class="k">return</span> <span class="p">{</span> <span class="nx">ctor</span><span class="o">:</span> <span class="s1">'Person'</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">value</span> <span class="p">};</span> 
+    <span class="k">return</span> <span class="p">{</span> <span class="nx">ctor</span><span class="o">:</span> <span class="s1">'Person'</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">value</span> <span class="p">};</span> 
 <span class="p">};</span>
 
-<span class="kd">function</span> <span class="nx">showPerson</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">ctor</span> <span class="o">===</span> <span class="s2">"Person"</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s2">", aged "</span> <span class="o">+</span> <span class="nx">numberToString</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">age</span><span class="p">)</span>
-  <span class="p">};</span>
-  <span class="k">throw</span> <span class="s2">"Failed pattern match"</span> 
-<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">showPerson</span><span class="p">(</span><span class="nx">_1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">_1</span><span class="p">.</span><span class="nx">ctor</span> <span class="o">===</span> <span class="s2">"Person"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">_1</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s2">", aged "</span> <span class="o">+</span> <span class="nx">numberToString</span><span class="p">(</span><span class="nx">_1</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">age</span><span class="p">);</span> 
+    <span class="p">};</span> 
+    <span class="k">throw</span> <span class="s2">"Failed pattern match"</span><span class="p">;</span> 
+<span class="p">};</span> 
 
 </pre></div>
 
@@ -216,7 +215,7 @@
 <li>Functions can have zero or more arguments</li>
 </ul>
 </li>
-<li>Polymorphic types (for top level declarations only)
+<li>Polymorphic types
 
 <ul>
 <li>E.g. <code>forall a. a -&gt; a</code> </li>
@@ -270,11 +269,10 @@
 
 <div class="highlight highlight-haskell"><pre><span class="kr">data</span> <span class="kt">Foo</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Foo</span> <span class="o">|</span> <span class="kt">Bar</span> <span class="kt">String</span>
 
-<span class="nf">runFoo</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">foo</span> <span class="ow">-&gt;</span> <span class="kr">case</span> <span class="n">foo</span> <span class="kr">of</span>
-<span class="kt">Foo</span> <span class="ow">-&gt;</span> <span class="s">"It's a Foo"</span>
-<span class="kt">Bar</span> <span class="n">s</span> <span class="ow">-&gt;</span> <span class="s">"It's a Bar. The string is "</span> <span class="o">++</span> <span class="n">s</span>
+<span class="nf">runFoo</span> <span class="kt">Foo</span> <span class="ow">=</span> <span class="s">"It's a Foo"</span>
+<span class="nf">runFoo</span> <span class="p">(</span><span class="kt">Bar</span> <span class="n">s</span><span class="p">)</span> <span class="ow">=</span> <span class="s">"It's a Bar. The string is "</span> <span class="o">++</span> <span class="n">s</span>
 
-<span class="nf">runFoo</span> <span class="kt">Foo</span> <span class="o">++</span> <span class="n">runFoo</span> <span class="p">(</span><span class="kt">Bar</span> <span class="s">"Test"</span><span class="p">)</span>
+<span class="nf">test</span> <span class="ow">=</span> <span class="n">runFoo</span> <span class="kt">Foo</span> <span class="o">++</span> <span class="n">runFoo</span> <span class="p">(</span><span class="kt">Bar</span> <span class="s">"Test"</span><span class="p">)</span>
 </pre></div>
 
 <p>In the example, Foo is a tagged union type which has two constructors. It's first constructor <code>Foo</code> takes no argument, and it's second <code>Bar</code> takes one, which must be a String.</p>
@@ -363,7 +361,7 @@
 
 <p>Here is an example:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">identity</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">identity</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">x</span>
 </pre></div>
 
 <p><code>identity</code> is inferred to have (polymorphic) type <code>forall t0. t0 -&gt; t0</code>. This means that for any type <code>t0</code>, <code>identity</code> can be given a value of type <code>t0</code> and will give back a value of the same type.</p>
@@ -371,12 +369,12 @@
 <p>A type annotation can also be provided:</p>
 
 <div class="highlight highlight-haskell"><pre><span class="nf">identity</span> <span class="ow">::</span> <span class="n">forall</span> <span class="n">a</span><span class="o">.</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">a</span>
-<span class="nf">identity</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
+<span class="nf">identity</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">x</span>
 </pre></div>
 
 <p>Functions may also be polymorphic in row types or type variables with other kinds (see "Kind System"):</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">addProps</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">o</span> <span class="ow">-&gt;</span> <span class="n">o</span><span class="o">.</span><span class="n">foo</span> <span class="o">+</span> <span class="n">o</span><span class="o">.</span><span class="n">bar</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">addProps</span> <span class="n">o</span> <span class="ow">=</span> <span class="n">o</span><span class="o">.</span><span class="n">foo</span> <span class="o">+</span> <span class="n">o</span><span class="o">.</span><span class="n">bar</span>
 </pre></div>
 
 <p>Here, <code>addProps</code> is inferred to have type <code>forall r. { foo :: Number, bar :: Number | r } -&gt; Number</code>. That is, it can take any type which has properties <code>Foo</code> and <code>Bar</code>, and <em>any other record properties</em>.</p>
@@ -405,7 +403,7 @@
 <p>As an example, we can pass a polymorphic function as an argument to another function:</p>
 
 <div class="highlight highlight-haskell"><pre><span class="nf">poly</span> <span class="ow">::</span> <span class="p">(</span><span class="n">forall</span> <span class="n">a</span><span class="o">.</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Boolean</span>
-<span class="nf">poly</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">f</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">f</span> <span class="n">true</span>
+<span class="nf">poly</span> <span class="n">f</span> <span class="ow">=</span> <span class="p">(</span><span class="n">f</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">f</span> <span class="n">true</span>
 </pre></div>
 
 <p>Notice that the polymorphic function's type argument is instantiated to both <code>Number</code> and <code>Boolean</code>.</p>
@@ -461,7 +459,7 @@
 <li>Naked expressions</li>
 </ul><p>Here is an example of a power function defined using a block:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">pow</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="n">p</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">pow</span> <span class="n">n</span> <span class="n">p</span> <span class="ow">=</span> <span class="p">{</span>
     <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span><span class="p">;</span>
     <span class="n">for</span> <span class="p">(</span><span class="n">i</span> <span class="ow">&lt;-</span> <span class="mi">0</span> <span class="n">until</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">n</span><span class="p">;</span>
@@ -474,7 +472,7 @@
 
 <p>That is, while the example above is valid, the following does not compile:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">incr</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">incr</span> <span class="n">n</span> <span class="ow">=</span> <span class="p">{</span>
     <span class="n">n</span> <span class="ow">=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
     <span class="n">return</span> <span class="n">n</span><span class="p">;</span>
   <span class="p">}</span>
@@ -484,7 +482,7 @@
 
 <p>This function can be rewritten as follows:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">incr</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">incr</span> <span class="n">n</span> <span class="ow">=</span> <span class="p">{</span>
     <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span><span class="p">;</span>
     <span class="n">m</span> <span class="ow">=</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
     <span class="n">return</span> <span class="n">m</span><span class="p">;</span>
@@ -512,7 +510,7 @@
 
 <p>For each loops loop over the elements in an array using the <code>Object.forEach</code> method. A polyfill may be required for some browsers:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">total</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">arr</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">total</span> <span class="n">arr</span> <span class="ow">=</span> <span class="p">{</span>
     <span class="n">var</span> <span class="n">n</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span>
     <span class="n">foreach</span> <span class="p">(</span><span class="n">i</span> <span class="kr">in</span> <span class="n">arr</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">n</span> <span class="ow">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">i</span><span class="p">;</span>
@@ -526,7 +524,7 @@
 
 <p>The syntax of a while loop is similar to a foreach loop:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">log2</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">log2</span> <span class="n">n</span> <span class="ow">=</span> <span class="p">{</span>
     <span class="n">var</span> <span class="n">count</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span>
     <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span><span class="p">;</span>
     <span class="n">while</span> <span class="p">(</span><span class="n">m</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
@@ -542,7 +540,7 @@
 
 <p>Else branches are optional, and may contain further <code>if</code> statements, just as in Javascript:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">collatz</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">collatz</span> <span class="n">n</span> <span class="ow">=</span> <span class="p">{</span>
     <span class="n">var</span> <span class="n">count</span> <span class="ow">=</span> <span class="mi">0</span><span class="p">;</span>
     <span class="n">var</span> <span class="n">m</span> <span class="ow">=</span> <span class="n">n</span><span class="p">;</span>
     <span class="n">while</span> <span class="p">(</span><span class="n">m</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
@@ -562,7 +560,7 @@
 
 <p>Any expression with the empty type <code>{ }</code> can be used as a statement in a block. For example, method calls which return <code>{ }</code>:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">example</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">n</span> <span class="n">m</span> <span class="ow">-&gt;</span> <span class="p">{</span>
+<div class="highlight highlight-haskell"><pre><span class="nf">example</span> <span class="n">n</span> <span class="n">m</span> <span class="ow">=</span> <span class="p">{</span>
     <span class="n">console</span><span class="o">.</span><span class="n">log</span> <span class="s">"Adding two numbers"</span>
     <span class="n">return</span> <span class="n">n</span> <span class="o">+</span> <span class="n">m</span><span class="p">;</span>
   <span class="p">}</span>
@@ -589,6 +587,16 @@
   <span class="n">pattern</span> <span class="ow">-&gt;</span> <span class="n">result</span>
   <span class="c1">-- ...</span>
   <span class="n">pattern</span> <span class="ow">-&gt;</span> <span class="n">result</span>
+</pre></div>
+
+<p>Pattern matching can also be used in the declaration of functions, as we have already seen:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="nf">fn</span> <span class="n">pattern_1</span> <span class="o">...</span> <span class="n">pattern_n</span> <span class="ow">=</span> <span class="n">result</span>
+</pre></div>
+
+<p>Any of the above types of pattern are also valid when introducing functions. In addition, patterns can also be grouped in parentheses to introduce multiple-arugument functions. For example, </p>
+
+<div class="highlight highlight-haskell"><pre><span class="nf">example</span> <span class="n">x</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="n">w</span> <span class="ow">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span> <span class="o">*</span> <span class="n">w</span>
 </pre></div>
 
 <p>The following pattern types are supported:</p>
@@ -718,6 +726,12 @@
   <span class="kt">[]</span> <span class="ow">-&gt;</span> <span class="mi">0</span>
   <span class="n">x</span> <span class="kt">:</span> <span class="n">xs</span> <span class="o">|</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">-&gt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">evens</span> <span class="n">xs</span>
   <span class="kr">_</span> <span class="kt">:</span> <span class="n">xs</span> <span class="ow">-&gt;</span> <span class="n">evens</span> <span class="n">xs</span>
+</pre></div>
+
+<p>When defining a function, guards appear after all patterns:</p>
+
+<div class="highlight highlight-haskell"><pre><span class="nf">greater</span> <span class="n">x</span> <span class="n">y</span> <span class="o">|</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">y</span> <span class="ow">=</span> <span class="n">true</span>
+<span class="nf">greater</span> <span class="kr">_</span> <span class="kr">_</span> <span class="ow">=</span> <span class="n">false</span>
 </pre></div>
 
 <h2>
