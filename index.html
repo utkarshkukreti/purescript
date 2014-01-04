@@ -119,16 +119,22 @@
 
 <p>As an introductory example, here is the usual "Hello World" written in PureScript:</p>
 
-<div class="highlight highlight-haskell"><pre><span class="nf">foreign</span> <span class="kr">import</span> <span class="nn">console</span> <span class="ow">::</span> <span class="p">{</span> <span class="n">log</span> <span class="ow">::</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">{}</span> <span class="p">}</span>
+<div class="highlight highlight-haskell"><pre><span class="kr">module</span> <span class="nn">Main</span> <span class="kr">where</span>
+
+<span class="nf">foreign</span> <span class="kr">import</span> <span class="nn">console</span> <span class="ow">::</span> <span class="p">{</span> <span class="n">log</span> <span class="ow">::</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="p">{}</span> <span class="p">}</span>
 
 <span class="nf">main</span> <span class="ow">=</span> <span class="nf">\</span> <span class="ow">-&gt;</span> <span class="n">console</span><span class="o">.</span><span class="n">log</span> <span class="s">"Hello, World!"</span>
 </pre></div>
 
 <p>which compiles to the following Javascript:</p>
 
-<div class="highlight highlight-javascript"><pre><span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Hello, World!"</span><span class="p">);</span>
-<span class="p">}</span>
+<div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">Main</span><span class="p">;</span> 
+<span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">Main</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Hello, World!"</span><span class="p">);</span> 
+    <span class="p">};</span> 
+    <span class="nx">Main</span><span class="p">.</span><span class="nx">main</span> <span class="o">=</span> <span class="nx">main</span><span class="p">;</span> 
+<span class="p">})(</span><span class="nx">Main</span> <span class="o">=</span> <span class="nx">Main</span> <span class="o">||</span> <span class="p">{});</span>
 </pre></div>
 
 <h2>
@@ -797,24 +803,13 @@
 <h2>
 <a name="modules" class="anchor" href="#modules"><span class="octicon octicon-link"></span></a>Modules</h2>
 
-<p>Simple modules are supported by the <code>module</code> keyword.</p>
+<p>Modules are introduced using the <code>module</code> keyword. All code must be placed in a module.</p>
 
-<p>Introduce a module as follows, with a list of indented declarations:</p>
-
-<div class="highlight highlight-haskell"><pre><span class="kr">module</span> <span class="nn">A</span> <span class="kr">where</span>
-
-    <span class="n">foo</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
-</pre></div>
-
-<p>Modules may be nested:</p>
+<p>Introduce a module as follows, with a list of declarations:</p>
 
 <div class="highlight highlight-haskell"><pre><span class="kr">module</span> <span class="nn">A</span> <span class="kr">where</span>
 
-    <span class="n">foo</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">x</span>
-
-    <span class="kr">module</span> <span class="nn">B</span> <span class="kr">where</span>
-
-        <span class="n">bar</span> <span class="ow">=</span> <span class="nf">\</span><span class="n">y</span> <span class="ow">-&gt;</span> <span class="n">y</span>
+<span class="nf">id</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">x</span>
 </pre></div>
 
 <p>Names may be qualified by using a dot:</p>
