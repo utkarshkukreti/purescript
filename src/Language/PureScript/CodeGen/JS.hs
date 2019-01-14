@@ -180,9 +180,10 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
   valueToJs' (Literal (pos, _, _, _) l) =
     rethrowWithPosition pos $ literalToValueJS pos l
   valueToJs' (Var (_, _, _, Just (IsConstructor _ [])) name) =
-    return $ accessorString "value" $ qualifiedToJS id name
+    return $ qualifiedToJS id name
   valueToJs' (Var (_, _, _, Just (IsConstructor _ _)) name) =
-    return $ accessorString "create" $ qualifiedToJS id name
+    return $ qualifiedToJS id name
+    -- return $ accessorString "create" $ qualifiedToJS id name
   valueToJs' (Accessor _ prop val) =
     accessorString prop <$> valueToJs val
   valueToJs' (ObjectUpdate _ o ps) = do
@@ -211,9 +212,9 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
     case f of
       Var (_, _, _, Just IsNewtype) _ -> return (head args')
       Var (_, _, _, Just (IsConstructor _ fields)) name | length args == length fields ->
-        return $ AST.Unary Nothing AST.New $ AST.App Nothing (qualifiedToJS id name) args'
+        return $ AST.App Nothing (qualifiedToJS id name) args'
       Var (_, _, _, Just IsTypeClassConstructor) name ->
-        return $ AST.Unary Nothing AST.New $ AST.App Nothing (qualifiedToJS id name) args'
+        return $ AST.App Nothing (qualifiedToJS id name) args'
       _ -> flip (foldl (\fn a -> AST.App Nothing fn [a])) args' <$> valueToJs f
     where
     unApp :: Expr Ann -> [Expr Ann] -> (Expr Ann, [Expr Ann])
@@ -239,19 +240,14 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
                   AST.Function Nothing Nothing ["value"]
                     (AST.Block Nothing [AST.Return Nothing $ AST.Var Nothing "value"]))])
   valueToJs' (Constructor _ _ ctor []) =
-    return $ iife (properToJs ctor) [ AST.Function Nothing (Just (properToJs ctor)) [] (AST.Block Nothing [])
-           , AST.Assignment Nothing (accessorString "value" (AST.Var Nothing (properToJs ctor)))
-                (AST.Unary Nothing AST.New $ AST.App Nothing (AST.Var Nothing (properToJs ctor)) []) ]
+    let tag = AST.StringLiteral Nothing $ mkString $ runProperName ctor
+    in return $ AST.ArrayLiteral Nothing [tag]
   valueToJs' (Constructor _ _ ctor fields) =
-    let constructor =
-          let body = [ AST.Assignment Nothing ((accessorString $ mkString $ identToJs f) (AST.Var Nothing "this")) (var f) | f <- fields ]
-          in AST.Function Nothing (Just (properToJs ctor)) (identToJs `map` fields) (AST.Block Nothing body)
-        createFn =
-          let body = AST.Unary Nothing AST.New $ AST.App Nothing (AST.Var Nothing (properToJs ctor)) (var `map` fields)
-          in foldr (\f inner -> AST.Function Nothing Nothing [identToJs f] (AST.Block Nothing [AST.Return Nothing inner])) body fields
-    in return $ iife (properToJs ctor) [ constructor
-                          , AST.Assignment Nothing (accessorString "create" (AST.Var Nothing (properToJs ctor))) createFn
-                          ]
+    let
+      -- tag = AST.NumericLiteral Nothing $ Left 0
+      tag = AST.StringLiteral Nothing $ mkString $ runProperName ctor
+      body = AST.ArrayLiteral Nothing $ [tag] ++ [(AST.Var Nothing $ identToJs f) | f <- fields]
+    in return $ AST.Function Nothing Nothing (identToJs `map` fields) (AST.Block Nothing $ [AST.Return Nothing body])
 
   iife :: Text -> [AST] -> AST
   iife v exprs = AST.App Nothing (AST.Function Nothing Nothing [] (AST.Block Nothing $ exprs ++ [AST.Return Nothing $ AST.Var Nothing v])) []
@@ -330,7 +326,7 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
       valueError _ l@(AST.NumericLiteral _ _) = l
       valueError _ l@(AST.StringLiteral _ _)  = l
       valueError _ l@(AST.BooleanLiteral _ _) = l
-      valueError s _                        = accessorString "name" . accessorString "constructor" $ AST.Var Nothing s
+      valueError s _                        = accessorString "0" $ AST.Var Nothing s
 
       guardsToJs :: Either [(Guard Ann, Expr Ann)] (Expr Ann) -> m [AST]
       guardsToJs (Left gs) = traverse genGuard gs where
@@ -359,21 +355,28 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
   binderToJs' varName done (ConstructorBinder (_, _, _, Just IsNewtype) _ _ [b]) =
     binderToJs varName done b
   binderToJs' varName done (ConstructorBinder (_, _, _, Just (IsConstructor ctorType fields)) _ ctor bs) = do
-    js <- go (zip fields bs) done
+    js <- go (zip [1..] bs) done
     return $ case ctorType of
       ProductType -> js
       SumType ->
-        [AST.IfElse Nothing (AST.InstanceOf Nothing (AST.Var Nothing varName) (qualifiedToJS (Ident . runProperName) ctor))
+        let
+          tag = AST.StringLiteral Nothing $
+            case ctor of
+              Qualified (Just cname) a -> mkString $ runProperName a
+              -- AST.Var _ s -> s
+              _ -> ""
+        in
+        [AST.IfElse Nothing (AST.Binary Nothing AST.EqualTo (AST.Indexer Nothing (AST.NumericLiteral Nothing $ Left 0) (AST.Var Nothing varName)) tag)
                   (AST.Block Nothing js)
                   Nothing]
     where
-    go :: [(Ident, Binder Ann)] -> [AST] -> m [AST]
+    go :: [(Integer, Binder Ann)] -> [AST] -> m [AST]
     go [] done' = return done'
     go ((field, binder) : remain) done' = do
       argVar <- freshName
       done'' <- go remain done'
       js <- binderToJs argVar done'' binder
-      return (AST.VariableIntroduction Nothing argVar (Just $ accessorString (mkString $ identToJs field) $ AST.Var Nothing varName) : js)
+      return (AST.VariableIntroduction Nothing argVar (Just $ AST.Indexer Nothing (AST.NumericLiteral Nothing $ Left field) $ AST.Var Nothing varName) : js)
   binderToJs' _ _ ConstructorBinder{} =
     internalError "binderToJs: Invalid ConstructorBinder in binderToJs"
   binderToJs' varName done (NamedBinder _ ident binder) = do
