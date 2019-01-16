@@ -204,7 +204,7 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
     unAbs (Abs _ arg val) = arg : unAbs val
     unAbs _ = []
     assign :: Ident -> (PSString, AST)
-    assign name = (mkString $ runIdent name, AST.Var Nothing $ runIdent name)
+    assign name = (mkString $ runIdent name, AST.Var Nothing $ identToJs name)
   valueToJs' (Abs _ arg val) = do
     ret <- valueToJs val
     let jsArg = case arg of
