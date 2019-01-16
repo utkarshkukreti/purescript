@@ -184,6 +184,8 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
     rethrowWithPosition pos $ literalToValueJS pos l
   valueToJs' (Var (_, _, _, Just (IsConstructor _ [])) name) =
     return $ qualifiedToJS id name
+  valueToJs' (Var (_, _, _, Just (IsConstructor _ [_])) name) =
+    return $ qualifiedToJS id name
   valueToJs' (Var (_, _, _, Just (IsConstructor _ fields)) name) =
     let
       createFn =
