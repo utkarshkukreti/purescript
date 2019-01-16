@@ -181,8 +181,14 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
     rethrowWithPosition pos $ literalToValueJS pos l
   valueToJs' (Var (_, _, _, Just (IsConstructor _ [])) name) =
     return $ qualifiedToJS id name
-  valueToJs' (Var (_, _, _, Just (IsConstructor _ _)) name) =
-    return $ qualifiedToJS id name
+  valueToJs' (Var (_, _, _, Just (IsConstructor _ fields)) name) =
+    -- return $ qualifiedToJS id name
+    let
+      createFn =
+        let body = AST.App Nothing (qualifiedToJS id name) (var `map` fields)
+        in foldr (\f inner -> AST.Function Nothing Nothing [identToJs f] (AST.Block Nothing [AST.Return Nothing inner])) body fields
+    in
+      return createFn
     -- return $ accessorString "create" $ qualifiedToJS id name
   valueToJs' (Accessor _ prop val) =
     accessorString prop <$> valueToJs val
@@ -192,14 +198,13 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
     extendObj obj sts
   valueToJs' e@(Abs (_, _, _, Just IsTypeClassConstructor) _ _) =
     let args = unAbs e
-    in return $ AST.Function Nothing Nothing (map identToJs args) (AST.Block Nothing $ map assign args)
+    in return $ AST.Function Nothing Nothing (map identToJs args) (AST.Block Nothing [AST.Return Nothing $ AST.ObjectLiteral Nothing $ map assign args])
     where
     unAbs :: Expr Ann -> [Ident]
     unAbs (Abs _ arg val) = arg : unAbs val
     unAbs _ = []
-    assign :: Ident -> AST
-    assign name = AST.Assignment Nothing (accessorString (mkString $ runIdent name) (AST.Var Nothing "this"))
-                               (var name)
+    assign :: Ident -> (PSString, AST)
+    assign name = (mkString $ runIdent name, AST.Var Nothing $ runIdent name)
   valueToJs' (Abs _ arg val) = do
     ret <- valueToJs val
     let jsArg = case arg of
@@ -213,6 +218,13 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
       Var (_, _, _, Just IsNewtype) _ -> return (head args')
       Var (_, _, _, Just (IsConstructor _ fields)) name | length args == length fields ->
         return $ AST.App Nothing (qualifiedToJS id name) args'
+      -- Var (_, _, _, Just (IsConstructor _ fields)) name ->
+      --   let
+      --     createFn =
+      --       let body = AST.App Nothing (qualifiedToJS id name) (var `map` fields)
+      --       in foldr (\f inner -> AST.Function Nothing Nothing [identToJs f] (AST.Block Nothing [AST.Return Nothing inner])) body fields
+      --   in
+      --     return $ flip (foldl (\fn a -> AST.App Nothing fn [a])) args' createFn
       Var (_, _, _, Just IsTypeClassConstructor) name ->
         return $ AST.App Nothing (qualifiedToJS id name) args'
       _ -> flip (foldl (\fn a -> AST.App Nothing fn [a])) args' <$> valueToJs f
