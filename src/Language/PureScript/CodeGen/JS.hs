@@ -248,14 +248,13 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
                 AST.ObjectLiteral Nothing [("create",
                   AST.Function Nothing Nothing ["value"]
                     (AST.Block Nothing [AST.Return Nothing $ AST.Var Nothing "value"]))])
-  valueToJs' (Constructor _ _ ctor []) =
-    let tag = AST.StringLiteral Nothing $ mkString $ runProperName ctor
-    in return $ AST.ArrayLiteral Nothing [tag]
+  valueToJs' (Constructor _ _ _ []) =
+    return $ AST.ObjectLiteral Nothing []
   valueToJs' (Constructor _ _ ctor fields) =
     let
-      tag = AST.StringLiteral Nothing $ mkString $ runProperName ctor
-      array = AST.ArrayLiteral Nothing $ [tag] ++ var `map` fields
-    in return $ AST.Function Nothing Nothing (identToJs `map` fields) (AST.Block Nothing $ [AST.Return Nothing array])
+      tag = runProperName ctor
+      array = AST.ArrayLiteral Nothing $ [AST.Var Nothing $ properToJs $ ctor] ++ (var `map` fields)
+    in return $ AST.Function Nothing (Just $ identToJs $ Ident tag) (identToJs `map` fields) (AST.Block Nothing $ [AST.Return Nothing array])
 
   literalToValueJS :: SourceSpan -> Literal (Expr Ann) -> m AST
   literalToValueJS ss (NumericLiteral (Left i)) = return $ AST.NumericLiteral (Just ss) (Left i)
@@ -359,17 +358,18 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
     return (AST.VariableIntroduction Nothing (identToJs ident) (Just (AST.Var Nothing varName)) : done)
   binderToJs' varName done (ConstructorBinder (_, _, _, Just IsNewtype) _ _ [b]) =
     binderToJs varName done b
-  binderToJs' varName done (ConstructorBinder (_, _, _, Just (IsConstructor ctorType _)) _ (Qualified _ name) bs) = do
+  binderToJs' varName done (ConstructorBinder (_, _, _, Just (IsConstructor ctorType fields)) _ q bs) = do
     js <- go (zip [1..] bs) done
     return $ case ctorType of
       ProductType -> js
       SumType ->
         let
-          tag = AST.StringLiteral Nothing $ mkString $ runProperName name
+          tag = qualifiedToJS (Ident . runProperName) q
+          (lhs, rhs) = if fields == []
+            then (AST.Var Nothing varName, tag)
+            else ((accessorInteger 0 $ AST.Var Nothing varName), tag)
         in
-        [AST.IfElse Nothing (AST.Binary Nothing AST.EqualTo (accessorInteger 0 $ AST.Var Nothing varName) tag)
-                  (AST.Block Nothing js)
-                  Nothing]
+        [AST.IfElse Nothing (AST.Binary Nothing AST.EqualTo lhs rhs) (AST.Block Nothing js) Nothing]
     where
     go :: [(Integer, Binder Ann)] -> [AST] -> m [AST]
     go [] done' = return done'
