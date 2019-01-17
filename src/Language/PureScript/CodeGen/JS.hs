@@ -257,8 +257,10 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
       tag = case meta of
         Just (IsConstructor ProductType _) -> []
         _ -> [AST.Var Nothing $ properToJs $ ctor]
-      array = AST.ArrayLiteral Nothing $ tag ++ (var `map` fields)
-    in return $ AST.Function Nothing (Just $ identToJs $ Ident $ runProperName ctor) (identToJs `map` fields) (AST.Block Nothing $ [AST.Return Nothing array])
+      value = case tag ++ (var `map` fields) of
+        [one] -> one
+        more -> AST.ArrayLiteral Nothing more
+    in return $ AST.Function Nothing (Just $ identToJs $ Ident $ runProperName ctor) (identToJs `map` fields) (AST.Block Nothing $ [AST.Return Nothing value])
 
   literalToValueJS :: SourceSpan -> Literal (Expr Ann) -> m AST
   literalToValueJS ss (NumericLiteral (Left i)) = return $ AST.NumericLiteral (Just ss) (Left i)
@@ -367,7 +369,9 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
       startFrom = case ctorType of
         ProductType -> 0
         SumType -> 1
-    js <- go (zip [startFrom..] bs) done
+    js <- case (ctorType, fields, bs) of
+      (ProductType, [_], [b]) -> go' b done
+      _ -> go (zip [startFrom..] bs) done
     return $ case ctorType of
       ProductType -> js
       SumType ->
@@ -377,8 +381,14 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
             then (AST.Var Nothing varName, tag)
             else ((accessorInteger 0 $ AST.Var Nothing varName), tag)
         in
-        [AST.IfElse Nothing (AST.Binary Nothing AST.EqualTo lhs rhs) (AST.Block Nothing js) Nothing]
+        case (ctorType, fields) of
+          (ProductType, [_]) -> [AST.Block Nothing js]
+          _ -> [AST.IfElse Nothing (AST.Binary Nothing AST.EqualTo lhs rhs) (AST.Block Nothing js) Nothing]
     where
+    go' binder done' = do
+      argVar <- freshName
+      js <- binderToJs argVar done' binder
+      return (AST.VariableIntroduction Nothing argVar (Just $ AST.Var Nothing varName) : js)
     go :: [(Integer, Binder Ann)] -> [AST] -> m [AST]
     go [] done' = return done'
     go ((field, binder) : remain) done' = do
