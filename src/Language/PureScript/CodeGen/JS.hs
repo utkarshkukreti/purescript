@@ -252,11 +252,13 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
                     (AST.Block Nothing [AST.Return Nothing $ AST.Var Nothing "value"]))])
   valueToJs' (Constructor _ _ _ []) =
     return $ AST.ObjectLiteral Nothing []
-  valueToJs' (Constructor _ _ ctor fields) =
+  valueToJs' (Constructor (_, _, _, meta) _ ctor fields) =
     let
-      tag = runProperName ctor
-      array = AST.ArrayLiteral Nothing $ [AST.Var Nothing $ properToJs $ ctor] ++ (var `map` fields)
-    in return $ AST.Function Nothing (Just $ identToJs $ Ident tag) (identToJs `map` fields) (AST.Block Nothing $ [AST.Return Nothing array])
+      tag = case meta of
+        Just (IsConstructor ProductType _) -> []
+        _ -> [AST.Var Nothing $ properToJs $ ctor]
+      array = AST.ArrayLiteral Nothing $ tag ++ (var `map` fields)
+    in return $ AST.Function Nothing (Just $ identToJs $ Ident $ runProperName ctor) (identToJs `map` fields) (AST.Block Nothing $ [AST.Return Nothing array])
 
   literalToValueJS :: SourceSpan -> Literal (Expr Ann) -> m AST
   literalToValueJS ss (NumericLiteral (Left i)) = return $ AST.NumericLiteral (Just ss) (Left i)
@@ -361,7 +363,11 @@ moduleToJs (Module _ coms mn _ imps exps foreigns decls) foreign_ =
   binderToJs' varName done (ConstructorBinder (_, _, _, Just IsNewtype) _ _ [b]) =
     binderToJs varName done b
   binderToJs' varName done (ConstructorBinder (_, _, _, Just (IsConstructor ctorType fields)) _ q bs) = do
-    js <- go (zip [1..] bs) done
+    let
+      startFrom = case ctorType of
+        ProductType -> 0
+        SumType -> 1
+    js <- go (zip [startFrom..] bs) done
     return $ case ctorType of
       ProductType -> js
       SumType ->
